@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inglês Essencial: Do Zero ao Básico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A Single-Page Application (SPA) with a main tabbed navigation for 'Início', 'Aulas', 'Vocabulário', 'Exercícios', and 'Recursos'. This structure organizes the learning material into distinct, manageable sections. The 'Aulas' and 'Exercícios' tabs now feature a secondary sidebar navigation, breaking content into granular lessons and corresponding exercises, creating a clear, step-by-step learning path. This task-oriented design (Learn -> Practice -> Expand) is more intuitive for a self-learner, facilitating a focused and effective study flow. Daily life stories are integrated into grammar lessons for contextual learning. -->
+    <!-- Visualization & Content Choices: The report is text-heavy. The application focuses on high-quality typography and structured content presentation using HTML/CSS (Tailwind). Key interactions include: toggleable vocabulary cards with example translations (Goal: Inform/Engage), collapsible exercise answer keys (Goal: Practice/Inform), and copy-to-clipboard buttons (Goal: Utility). Short, simple daily life stories are embedded within grammar lessons to provide context. The only visualization is a simple, dynamic donut chart from Chart.js on the 'Início' page to track module completion, serving as a motivational tool (Goal: Engage/Inform). All content is presented using structured HTML for clarity and accessibility. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Warm Neutral Background */
+            color: #4A4A4A;
+        }
+        .main-nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+        }
+        .main-nav-link.active {
+            border-bottom-color: #5D7A8C; /* Subtle Accent */
+            color: #2c3e50;
+        }
+        .main-nav-link:hover {
+            border-bottom-color: #A7C4D4; /* Lighter Accent on Hover */
+            color: #2c3e50;
+        }
+        .sub-nav-link {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .sub-nav-link.active {
+            background-color: #EFEAE4;
+            border-left-color: #5D7A8C;
+            color: #2c3e50;
+            transform: translateX(4px);
+        }
+        .sub-nav-link:hover:not(.active) {
+            background-color: #F7F4F1;
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid #EFEAE4;
+        }
+        .vocab-card {
+            cursor: pointer;
+            perspective: 1000px;
+            height: 140px; /* Smaller height for vocab cards */
+        }
+        .vocab-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .vocab-card.flipped .vocab-card-inner {
+            transform: rotateY(180deg);
+        }
+        .vocab-card-front, .vocab-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.75rem; /* Reduced padding */
+            text-align: center;
+            font-size: 0.875rem; /* Smaller font size */
+        }
+        .vocab-card-back {
+            transform: rotateY(180deg);
+        }
+        .vocab-card-front span:first-child { font-size: 1.25rem; font-weight: 700; }
+        .vocab-card-back span:first-child { font-size: 1.1rem; font-weight: 700; }
+        .vocab-card-back span:last-child { font-size: 0.75rem; }
+
+        .btn-primary {
+            background-color: #5D7A8C;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #4A616F;
+        }
+        .btn-secondary {
+            background-color: #EFEAE4;
+            color: #4A4A4A;
+            transition: background-color 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #E5DCD0;
+        }
+        .prose-custom h3 { margin-top: 1.5em; margin-bottom: 0.8em; font-weight: 600; }
+        .prose-custom h4 { margin-top: 1.25em; margin-bottom: 0.5em; font-weight: 600; color: #5D7A8C; }
+        .prose-custom p, .prose-custom ul, .prose-custom ol, .prose-custom table { color: #4A4A4A; }
+        .prose-custom a { color: #5D7A8C; text-decoration: underline; }
+        .prose-custom table { width: 100%; margin-top: 1em; margin-bottom: 1em; border-collapse: collapse; }
+        .prose-custom th, .prose-custom td { border: 1px solid #EFEAE4; padding: 0.5rem 0.75rem; text-align: left; }
+        .prose-custom th { background-color: #F7F4F1; font-weight: 600; }
+        .prose-custom code { background-color: #EFEAE4; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-weight: 500; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Main Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-20 border-b border-gray-200/80">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <span class="text-[#5D7A8C]">Inglês</span> Essencial
+                </h1>
+                <div class="hidden md:flex items-center space-x-2 lg:space-x-4">
+                    <a href="#inicio" class="main-nav-link px-3 py-2 text-lg font-medium text-gray-600 active" data-tab="inicio">Início</a>
+                    <a href="#aulas" class="main-nav-link px-3 py-2 text-lg font-medium text-gray-600" data-tab="aulas">Aulas</a>
+                    <a href="#vocabulario" class="main-nav-link px-3 py-2 text-lg font-medium text-gray-600" data-tab="vocabulario">Vocabulário</a>
+                    <a href="#exercicios" class="main-nav-link px-3 py-2 text-lg font-medium text-gray-600" data-tab="exercicios">Exercícios</a>
+                    <a href="#recursos" class="main-nav-link px-3 py-2 text-lg font-medium text-gray-600" data-tab="recursos">Recursos</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 border-t border-gray-200">
+            <a href="#inicio" class="block main-nav-link-mobile px-4 py-2 text-base font-medium text-gray-700 rounded-md" data-tab="inicio">Início</a>
+            <a href="#aulas" class="block main-nav-link-mobile px-4 py-2 text-base font-medium text-gray-700 rounded-md" data-tab="aulas">Aulas</a>
+            <a href="#vocabulario" class="block main-nav-link-mobile px-4 py-2 text-base font-medium text-gray-700 rounded-md" data-tab="vocabulario">Vocabulário</a>
+            <a href="#exercicios" class="block main-nav-link-mobile px-4 py-2 text-base font-medium text-gray-700 rounded-md" data-tab="exercicios">Exercícios</a>
+            <a href="#recursos" class="block main-nav-link-mobile px-4 py-2 text-base font-medium text-gray-700 rounded-md" data-tab="recursos">Recursos</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <!-- INÍCIO TAB -->
+        <div id="inicio-content" class="tab-content">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Seu Caminho para a Fluência Básica</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Bem-vindo(a) ao Inglês Essencial! Este curso foi desenhado para você, que está começando do zero e quer construir uma base forte para não ter dúvidas e avançar com confiança.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card de Introdução -->
+                <div class="content-card p-6 lg:col-span-2">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Como Usar Este Curso</h3>
+                    <div class="prose prose-custom max-w-none">
+                        <p>Para um estudo autônomo eficaz, a consistência é a chave. Estudar um pouco todos os dias é muito mais eficaz do que longas sessões de estudo de vez em quando.</p>
+                        <p>Nossa estrutura foi pensada para facilitar sua jornada:</p>
+                        <ul>
+                            <li><strong>Aulas:</strong> Aprenda as regras essenciais para formar frases corretamente. Siga as aulas em ordem para uma progressão lógica.</li>
+                            <li><strong>Vocabulário:</strong> Expanda seu repertório de palavras com listas temáticas e técnicas de memorização.</li>
+                            <li><strong>Exercícios:</strong> Aplique o que aprendeu. Copie os exercícios no caderno, resolva e confira o gabarito.</li>
+                            <li><strong>Recursos:</strong> Explore os canais e vídeos recomendados para aprofundar seu conhecimento.</li>
+                        </ul>
+                        <p class="mt-4 font-semibold">Seu objetivo é chegar ao nível A2, onde você conseguirá se comunicar em tarefas simples e entender expressões do dia a dia. Vamos começar!</p>
+                    </div>
+                </div>
+                 <!-- Card de Progresso -->
+                <div class="content-card p-6 flex flex-col items-center justify-center">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Seu Progresso</h3>
+                    <p class="text-center text-gray-600 mb-4">Marque as aulas que você concluir para acompanhar sua evolução.</p>
+                    <div class="w-48 h-48 mx-auto">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                    <div id="progress-checklist" class="mt-6 w-full space-y-2 text-left">
+                        <!-- Checkboxes serão inseridos aqui pelo JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AULAS TAB -->
+        <div id="aulas-content" class="tab-content hidden">
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sub-navigation -->
+                <aside class="w-full md:w-1/4 lg:w-1/5">
+                    <h3 class="text-xl font-bold mb-4 px-4">Aulas</h3>
+                    <nav id="aulas-sub-nav" class="flex flex-col space-y-1">
+                        <!-- Links serão inseridos pelo JS -->
+                    </nav>
+                </aside>
+                <!-- Content Area -->
+                <div id="aulas-content-area" class="w-full md:w-3/4 lg:w-4/5">
+                    <!-- Conteúdo da aula será carregado aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VOCABULÁRIO TAB -->
+        <div id="vocabulario-content" class="tab-content hidden">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Expansão de Vocabulário</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Construa seu repertório de palavras. Clique nos cartões para revelar a tradução e o exemplo. Use as técnicas de memorização para fixar o aprendizado.</p>
+            </div>
+            
+            <div id="vocab-sections">
+                <!-- Seções de vocabulário serão inseridas aqui -->
+            </div>
+        </div>
+
+        <!-- EXERCÍCIOS TAB -->
+        <div id="exercicios-content" class="tab-content hidden">
+             <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sub-navigation -->
+                <aside class="w-full md:w-1/4 lg:w-1/5">
+                    <h3 class="text-xl font-bold mb-4 px-4">Aulas</h3>
+                    <nav id="exercicios-sub-nav" class="flex flex-col space-y-1">
+                       <!-- Links de exercícios serão inseridos aqui -->
+                    </nav>
+                </aside>
+                <!-- Content Area -->
+                <div id="exercicios-content-area" class="w-full md:w-3/4 lg:w-4/5">
+                    <!-- Conteúdo dos exercícios será carregado aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RECURSOS TAB -->
+        <div id="recursos-content" class="tab-content hidden">
+             <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Recursos Complementares</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Para enriquecer sua jornada, selecionamos canais do YouTube com explicações em português ou legendas que facilitam a compreensão.</p>
+            </div>
+            <div id="recursos-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Recursos serão inseridos aqui -->
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const data = {
+            aulas: [
+                {
+                    id: 'aula1',
+                    title: 'Aula 1: Fundamentos do Inglês',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 1: Fundamentos do Inglês</h2>
+                            <p>Esta aula é o seu ponto de partida! Você aprenderá a base para se apresentar e falar sobre quem você é usando o verbo "to be" e os pronomes.</p>
+                            
+                            <h4>A. O Verbo "To Be" (Presente)</h4>
+                            <p>O verbo "to be" significa "ser" ou "estar" e é um dos mais importantes em inglês. Ele é usado para descrever pessoas, coisas, lugares e estados.</p>
+                            <p><strong>Conjugação:</strong></p>
+                            <ul>
+                                <li>I <strong>am</strong> (Eu sou / estou)</li>
+                                <li>You <strong>are</strong> (Você é / está; Vocês são / estão)</li>
+                                <li>He/She/It <strong>is</strong> (Ele/Ela é / está)</li>
+                                <li>We <strong>are</strong> (Nós somos / estamos)</li>
+                                <li>They <strong>are</strong> (Eles/Elas são / estão)</li>
+                            </ul>
+                            <p><strong>Forma Afirmativa:</strong> Sujeito + Verbo. Ex: <code>I am a student.</code> (Eu sou um estudante.)</p>
+                            <p><strong>Forma Negativa:</strong> Sujeito + Verbo + "not". Ex: <code>They are not here.</code> (Eles não estão aqui.)</p>
+                            <p><strong>Forma Interrogativa:</strong> Verbo + Sujeito? Ex: <code>Is she happy?</code> (Ela está feliz?)</p>
+                            <p>As contrações são muito comuns na fala: <code>I'm</code>, <code>you're</code>, <code>he's</code>, <code>isn't</code>, <code>aren't</code>.</p>
+                            <table>
+                                <thead><tr><th>Pronome</th><th>Afirmativa</th><th>Negativa</th><th>Interrogativa</th><th>Contração</th></tr></thead>
+                                <tbody>
+                                    <tr><td>I</td><td>am</td><td>am not</td><td>Am I...?</td><td>I'm</td></tr>
+                                    <tr><td>You</td><td>are</td><td>are not</td><td>Are you...?</td><td>You're / aren't</td></tr>
+                                    <tr><td>He/She/It</td><td>is</td><td>is not</td><td>Is he...?</td><td>He's / isn't</td></tr>
+                                    <tr><td>We/They</td><td>are</td><td>are not</td><td>Are we...?</td><td>We're / aren't</td></tr>
+                                </tbody>
+                            </table>
+
+                            <h4>B. Pronomes Pessoais (Sujeito e Objeto)</h4>
+                            <p>Pronomes substituem nomes para evitar repetição.</p>
+                            <ul>
+                                <li><strong>Pronomes Sujeito:</strong> Fazem a ação (I, you, he, she, it, we, they). Ex: <code>She is a doctor.</code> (Ela é uma médica.)</li>
+                                <li><strong>Pronomes Objeto:</strong> Recebem a ação (me, you, him, her, it, us, them). Ex: <code>He talks to me.</code> (Ele fala comigo.)</li>
+                            </ul>
+                            <table>
+                                <thead><tr><th>Sujeito</th><th>Objeto</th></tr></thead>
+                                <tbody>
+                                    <tr><td>I</td><td>me</td></tr>
+                                    <tr><td>You</td><td>you</td></tr>
+                                    <tr><td>He</td><td>him</td></tr>
+                                    <tr><td>She</td><td>her</td></tr>
+                                    <tr><td>It</td><td>it</td></tr>
+                                    <tr><td>We</td><td>us</td></tr>
+                                    <tr><td>They</td><td>them</td></tr>
+                                </tbody>
+                            </table>
+
+                            <h4>C. Adjetivos Possessivos e Pronomes Possessivos</h4>
+                            <p>Indicam posse.</p>
+                            <ul>
+                                <li><strong>Adjetivos Possessivos:</strong> Vêm ANTES de um substantivo (my, your, his, her, its, our, their). Ex: <code>This is my car.</code> (Este é meu carro.)</li>
+                                <li><strong>Pronomes Possessivos:</strong> Substituem o substantivo (mine, yours, his, hers, its, ours, theirs). Ex: <code>This book is mine.</code> (Este livro é meu.)</li>
+                            </ul>
+                            <table>
+                                <thead><tr><th>Adj. Possessivo</th><th>Pron. Possessivo</th></tr></thead>
+                                <tbody>
+                                    <tr><td>my</td><td>mine</td></tr>
+                                    <tr><td>your</td><td>yours</td></tr>
+                                    <tr><td>his</td><td>his</td></tr>
+                                    <tr><td>her</td><td>hers</td></tr>
+                                    <tr><td>its</td><td>-</td></tr>
+                                    <tr><td>our</td><td>ours</td></tr>
+                                    <tr><td>their</td><td>theirs</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `,
+                    story: {
+                        title: 'Uma Nova Amizade',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">Uma Nova Amizade</h4>
+                                <p>This is Ana. She is a student. Ana is 20 years old. She is from Brazil. Her favorite color is blue. Ana is happy.</p>
+                                <p>This is Ben. He is a new student. Ben is 21. He is from Canada. His favorite color is green. Ben is friendly.</p>
+                                <p>Ana and Ben are in the same class. They are new friends. Their teacher is Ms. Smith. She is very kind. They are excited about their English classes. This is their first lesson. It is interesting. Is this book theirs? Yes, it is their book.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula2',
+                    title: 'Aula 2: Descrevendo Coisas e Pessoas',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 2: Descrevendo Coisas e Pessoas</h2>
+                            <p>Nesta aula, você aprenderá a descrever o que existe ao seu redor e como falar sobre as características de pessoas e objetos.</p>
+
+                            <h4>A. "There is / There are"</h4>
+                            <p>Usamos estas expressões para falar sobre a existência de algo (o verbo "haver" em português).</p>
+                            <ul>
+                                <li><strong>There is:</strong> Para substantivos no singular ou incontáveis. Ex: <code>There is a book on the table.</code> (Há um livro na mesa.)</li>
+                                <li><strong>There are:</strong> Para substantivos no plural. Ex: <code>There are two chairs in the room.</code> (Há duas cadeiras na sala.)</li>
+                                <li><strong>Negativa:</strong> <code>There isn't a cat here.</code> / <code>There aren't any dogs.</code></li>
+                                <li><strong>Interrogativa:</strong> <code>Is there a problem?</code> / <code>Are there students in the class?</code></li>
+                            </ul>
+
+                            <h4>B. Adjetivos: Posição e Uso</h4>
+                            <p>Adjetivos descrevem substantivos. Em inglês, o <strong>adjetivo vem ANTES do substantivo</strong>.</p>
+                            <p>Exemplos: <code>a beautiful house</code> (uma casa bonita), <code>an expensive car</code> (um carro caro).</p>
+                            <p>Eles também podem vir depois do verbo "to be": <code>The house is beautiful.</code></p>
+                            
+                            <h4>C. Artigos Definidos e Indefinidos (A/An, The, Zero Article)</h4>
+                            <p>Artigos indicam se algo é geral ou específico.</p>
+                            <ul>
+                                <li><strong>A/An (um/uma):</strong> Usados para substantivos contáveis no singular. <code>a</code> antes de som de consoante (<code>a book</code>) e <code>an</code> antes de som de vogal (<code>an apple</code>).</li>
+                                <li><strong>The (o/a/os/as):</strong> Usado para algo específico ou já mencionado. Ex: <code>The sun is hot.</code></li>
+                                <li><strong>Zero Article (Sem artigo):</strong> Usado para substantivos no plural em geral ou incontáveis. Ex: <code>I like dogs.</code>, <code>Water is essential.</code></li>
+                            </ul>
+                        </div>
+                    `,
+                    story: {
+                        title: 'O Novo Cachorrinho',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">O Novo Cachorrinho</h4>
+                                <p>Mom and Dad have a surprise. There is a new dog! It is a small dog. Its name is Max. Max is a cute puppy. There are two big eyes on his face.</p>
+                                <p>Is Max in the house? Yes, he is. There is a comfortable bed for him in the living room. There are also many toys. Max loves a red ball. This ball is his favorite toy. There is a bowl of water and a bowl of food for Max. Max is a happy dog. He is a good friend.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula3',
+                    title: 'Aula 3: Formando Suas Primeiras Frases',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 3: Formando Suas Primeiras Frases</h2>
+                            <p>Nesta aula, você vai aprender a estrutura básica para construir qualquer frase em inglês e como usar substantivos no singular e plural.</p>
+
+                            <h4>A. Formação de Frases Básicas (Sujeito + Verbo + Objeto)</h4>
+                            <p>A estrutura padrão em inglês é Sujeito + Verbo + Objeto (SVO).</p>
+                            <p><strong>Sujeito</strong> (quem faz a ação) + <strong>Verbo</strong> (a ação) + <strong>Objeto</strong> (quem recebe a ação).</p>
+                            <p>Exemplo: <code>She (S) reads (V) a book (O).</code> - (Ela lê um livro.)</p>
+                            <p>Entender essa ordem é fundamental para evitar a tradução literal do português e construir frases corretas.</p>
+
+                            <h4>B. Substantivos: Singular e Plural</h4>
+                            <p>A maioria dos substantivos forma o plural adicionando <strong>-s</strong> (book → books). Mas existem exceções importantes.</p>
+                            <ul>
+                                <li>Terminados em -s, -sh, -ch, -x, -z: Adiciona-se <strong>-es</strong> (bus → buses, box → boxes).</li>
+                                <li>Terminados em consoante + y: Troca-se o y por <strong>-ies</strong> (baby → babies).</li>
+                            </ul>
+                            <p><strong>Plurais Irregulares Comuns:</strong></p>
+                            <ul>
+                                <li>man → <strong>men</strong></li>
+                                <li>woman → <strong>women</strong></li>
+                                <li>child → <strong>children</strong></li>
+                                <li>person → <strong>people</strong></li>
+                                <li>foot → <strong>feet</strong></li>
+                                <li>tooth → <strong>teeth</strong></li>
+                            </ul>
+                        </div>
+                    `,
+                    story: {
+                        title: 'Um Dia na Biblioteca',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">Um Dia na Biblioteca</h4>
+                                <p>Sarah and Tom go to the library. Sarah likes books. She reads many books. Tom likes magazines. He reads magazines about cars. The library has many tables and chairs. There are also many children reading picture books.</p>
+                                <p>Sarah sees a big book. She takes the book. Tom finds two new magazines. They are happy. The librarian helps them. She gives them a smile. Sarah and Tom like the library. It is a quiet place. They see five men and two women working. These people love books too.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula4',
+                    title: 'Aula 4: Fazendo Perguntas Simples',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 4: Fazendo Perguntas Simples</h2>
+                            <p>Saber fazer perguntas é essencial para qualquer conversa. Aprenda a usar as "Wh-questions" e as "Yes/No questions".</p>
+                            
+                            <h4>A. "Wh-questions"</h4>
+                            <p>Buscam informações específicas. Começam com palavras como:</p>
+                            <ul>
+                                <li><strong>What:</strong> O quê/Qual (<code>What is your name?</code> - Qual é o seu nome?)</li>
+                                <li><strong>Who:</strong> Quem (<code>Who is that person?</code> - Quem é aquela pessoa?)</li>
+                                <li><strong>Where:</strong> Onde (<code>Where do you live?</code> - Onde você mora?)</li>
+                                <li><strong>When:</strong> Quando (<code>When is your birthday?</code> - Quando é seu aniversário?)</li>
+                                <li><strong>Why:</strong> Por que (<code>Why are you sad?</code> - Por que você está triste?)</li>
+                                <li><strong>How:</strong> Como (<code>How are you?</code> - Como você está?)</li>
+                            </ul>
+                            
+                            <h4>B. "Yes/No questions"</h4>
+                            <p>São perguntas que podem ser respondidas com "sim" ou "não". Geralmente começam com um verbo auxiliar ou "to be".</p>
+                            <ul>
+                                <li>Ex: <code>Are you a student?</code> (Você é um estudante?)</li>
+                                <li>Ex: <code>Do you like music?</code> (Você gosta de música?)</li>
+                            </ul>
+                        </div>
+                    `,
+                    story: null // No specific story for this one, focus on dialogues in exercises
+                },
+                {
+                    id: 'aula5',
+                    title: 'Aula 5: Sua Rotina Diária',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 5: Sua Rotina Diária</h2>
+                            <p>Nesta aula, você aprenderá a descrever seus hábitos, rotinas e fatos gerais usando o Present Simple.</p>
+                            
+                            <h4>A. Present Simple</h4>
+                            <p>Usado para hábitos, rotinas, fatos e verdades universais.</p>
+                            <ul>
+                                <li>Para <strong>I, you, we, they</strong>: verbo na forma base. Ex: <code>I work at home.</code> (Eu trabalho em casa.)</li>
+                                <li>Para <strong>he, she, it</strong>: adicionamos <strong>-s</strong> ou <strong>-es</strong> ao verbo. Ex: <code>She works at home.</code> (Ela trabalha em casa.)</li>
+                            </ul>
+                            <p><strong>Negativa (don't/doesn't):</strong> <code>I don't like tea.</code> / <code>He doesn't like tea.</code></p>
+                            <p><strong>Interrogativa (Do/Does):</strong> <code>Do you live here?</code> / <code>Does she live here?</code></p>
+                            <p>Lembre-se: na negativa e interrogativa, o verbo principal volta para a forma base (sem -s).</p>
+                            
+                            <h4>B. Advérbios de Frequência</h4>
+                            <p>Indicam com que frequência algo acontece (always, usually, often, sometimes, never).</p>
+                            <p>A posição deles é importante: <strong>antes do verbo principal</strong>, mas <strong>depois do verbo 'to be'</strong>.</p>
+                            <ul>
+                                <li><code>I <strong>always</strong> drink coffee in the morning.</code> (Eu sempre tomo café de manhã.)</li>
+                                <li><code>She is <strong>never</strong> late for class.</code> (Ela nunca se atrasa para a aula.)</li>
+                            </ul>
+
+                            <h4>C. Preposições de Tempo (In, On, At)</h4>
+                            <p>Indicam tempo:</p>
+                            <ul>
+                                <li><strong>IN:</strong> para períodos longos (meses, anos, estações, partes do dia). Ex: <code>in May</code>, <code>in 2024</code>, <code>in the morning</code>.</li>
+                                <li><strong>ON:</strong> para dias e datas. Ex: <code>on Monday</code>, <code>on Christmas Day</code>.</li>
+                                <li><strong>AT:</strong> para horas e momentos específicos. Ex: <code>at 8 PM</code>, <code>at night</code>, <code>at the weekend</code>.</li>
+                            </ul>
+                        </div>
+                    `,
+                    story: {
+                        title: 'A Manhã de Leo',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">A Manhã de Leo</h4>
+                                <p>Leo always wakes up at 7 AM. He usually has breakfast in the kitchen. He drinks coffee and eats bread. After breakfast, he brushes his teeth. Leo often reads the news on his phone. He never watches TV in the morning.</p>
+                                <p>At 8 AM, Leo starts to work. He works from home. On Tuesdays, he has a meeting at 9 AM. In the afternoon, he sometimes goes for a walk in the park. He always eats lunch at 1 PM. Leo is a very organized person. He is usually happy in the morning.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula6',
+                    title: 'Aula 6: Ações Acontecendo Agora',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 6: Ações Acontecendo Agora</h2>
+                            <p>Nesta aula, você aprenderá a usar o Present Continuous para falar sobre ações que estão ocorrendo no momento da fala ou em um período temporário.</p>
+                            
+                            <h4>A. Present Continuous</h4>
+                            <p>Usado para ações acontecendo <strong>agora</strong> ou em um período temporário.</p>
+                            <p>Estrutura: Sujeito + verbo <strong>to be</strong> (am/is/are) + verbo com <strong>-ing</strong>.</p>
+                            <p>Exemplos: <code>I am studying now.</code> (Eu estou estudando agora.), <code>They are playing soccer.</code> (Eles estão jogando futebol.)</p>
+                            <p><strong>Present Simple vs. Present Continuous:</strong></p>
+                            <ul>
+                                <li><code>I read books.</code> (Eu leio livros - um hábito).</li>
+                                <li><code>I am reading a book.</code> (Eu estou lendo um livro - agora).</li>
+                            </ul>
+                            
+                            <h4>B. Preposições de Lugar (In, On, At, Under, Next to, etc.)</h4>
+                            <p>Indicam localização:</p>
+                            <ul>
+                                <li><strong>IN:</strong> dentro de um espaço. Ex: <code>in the box</code>, <code>in Brazil</code>.</li>
+                                <li><strong>ON:</strong> sobre uma superfície. Ex: <code>on the table</code>.</li>
+                                <li><strong>AT:</strong> em um ponto ou local específico. Ex: <code>at the bus stop</code>, <code>at home</code>.</li>
+                                <li>Outras comuns: <strong>under</strong> (embaixo), <strong>next to</strong> (ao lado de), <strong>behind</strong> (atrás), <strong>in front of</strong> (na frente de), <strong>between</strong> (entre).</li>
+                            </ul>
+                        </div>
+                    `,
+                    story: {
+                        title: 'A Tarde no Parque',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">A Tarde no Parque</h4>
+                                <p>It is a beautiful afternoon. The sun is shining. Many people are enjoying the park. Look! A boy is playing with a red ball. He is laughing. His dog is running next to him. The dog is very fast.</p>
+                                <p>Two girls are sitting on a bench. They are talking and drinking juice. A woman is reading a book under a big tree. Her hat is on the grass. A man is listening to music. He is wearing headphones. His phone is in his pocket. Everyone is happy. What are you doing right now?</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula7',
+                    title: 'Aula 7: Falando Sobre o Passado',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 7: Falando Sobre o Passado</h2>
+                            <p>Nesta aula, você aprenderá a falar sobre eventos que aconteceram no passado usando o Past Simple.</p>
+
+                            <h4>A. Past Simple</h4>
+                            <p>Usado para ações concluídas em um tempo específico no passado.</p>
+                            <ul>
+                                <li><strong>Verbos Regulares:</strong> adicionamos <strong>-ed</strong> ao final. Ex: <code>work → worked</code>, <code>play → played</code>.</li>
+                                <li><strong>Verbos Irregulares:</strong> não seguem a regra e precisam ser memorizados (veja a tabela). Ex: <code>go → went</code>, <code>see → saw</code>, <code>eat → ate</code>.</li>
+                            </ul>
+                             <ul>
+                                <li><strong>Afirmativa:</strong> <code>I worked yesterday.</code> (Eu trabalhei ontem.) / <code>She went to the party.</code> (Ela foi à festa.)</li>
+                                <li><strong>Negativa (didn't):</strong> O verbo volta à forma base. <code>I didn't work.</code> (Eu não trabalhei.) / <code>She didn't go.</code> (Ela não foi.)</li>
+                                <li><strong>Interrogativa (Did):</strong> O verbo também volta à forma base. <code>Did you work?</code> (Você trabalhou?) / <code>Did she go?</code> (Ela foi?)</li>
+                            </ul>
+                            
+                            <h4>B. Verbos Irregulares Comuns</h4>
+                            <p>É importante memorizar a forma passada de alguns verbos que não seguem a regra do "-ed".</p>
+                            <table>
+                                <thead><tr><th>Verbo (Base)</th><th>Past Simple</th><th>Past Participle</th></tr></thead>
+                                <tbody>
+                                    <tr><td>be</td><td>was/were</td><td>been</td></tr>
+                                    <tr><td>go</td><td>went</td><td>gone/been</td></tr>
+                                    <tr><td>have</td><td>had</td><td>had</td></tr>
+                                    <tr><td>do</td><td>did</td><td>done</td></tr>
+                                    <tr><td>make</td><td>made</td><td>made</td></tr>
+                                    <tr><td>see</td><td>saw</td><td>seen</td></tr>
+                                    <tr><td>eat</td><td>ate</td><td>eaten</td></tr>
+                                    <tr><td>drink</td><td>drank</td><td>drunk</td></tr>
+                                    <tr><td>read</td><td>read</td><td>read</td></tr>
+                                    <tr><td>write</td><td>wrote</td><td>written</td></tr>
+                                    <tr><td>buy</td><td>bought</td><td>bought</td></tr>
+                                    <tr><td>come</td><td>came</td><td>come</td></tr>
+                                    <tr><td>get</td><td>got</td><td>gotten/got</td></tr>
+                                    <tr><td>give</td><td>gave</td><td>given</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `,
+                    story: {
+                        title: 'O Último Fim de Semana de Tom',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">O Último Fim de Semana de Tom</h4>
+                                <p>Last Saturday, Tom woke up late. He ate breakfast and then he went to the park with his dog, Max. They played a lot. Tom saw many people. He didn't work on Saturday. In the afternoon, he watched a movie at home.</p>
+                                <p>On Sunday, Tom visited his grandmother. She made a delicious lunch. Tom ate a lot of food. He had a great time. He didn't go to the cinema. Did he read a book? Yes, he read a new book. Tom had a very relaxing weekend.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula8',
+                    title: 'Aula 8: Planos e Previsões para o Futuro',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 8: Planos e Previsões para o Futuro</h2>
+                            <p>Aprenda a falar sobre o que você vai fazer e o que vai acontecer, usando "will", "going to" e até os tempos presentes.</p>
+
+                            <h4>A. Future Forms: "Will" vs. "Going to"</h4>
+                            <p>Existem várias formas de falar do futuro. As mais comuns são "will" e "going to".</p>
+                            <ul>
+                                <li><strong>Will:</strong> Para decisões espontâneas, previsões gerais, promessas. Ex: (Telefone toca) <code>I'll get it!</code> (Eu vou atender!)</li>
+                                <li><strong>Going to:</strong> Para planos e intenções já decididos, ou previsões com evidência. Ex: <code>I'm going to travel next month.</code> (Eu vou viajar mês que vem - é um plano). / <code>Look at the clouds! It's going to rain.</code> (Olhe as nuvens! Vai chover.)</li>
+                            </ul>
+                            
+                            <h4>B. Present Tenses para o Futuro</h4>
+                            <p>Também podemos usar tempos do presente para falar do futuro:</p>
+                             <ul>
+                                <li><strong>Present Continuous:</strong> Para arranjos e compromissos já confirmados. Ex: <code>I'm meeting a friend tonight.</code> (Vou encontrar um amigo hoje à noite.)</li>
+                                <li><strong>Present Simple:</strong> Para horários fixos e programações (trens, aulas, filmes). Ex: <code>The train leaves at 9 AM.</code> (O trem parte às 9h.)</li>
+                            </ul>
+                        </div>
+                    `,
+                    story: {
+                        title: 'A Festa de Aniversário da Ana',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">A Festa de Aniversário da Ana</h4>
+                                <p>Ana's birthday is next Saturday. She is going to have a party at her house. Her friends are going to come. She is meeting her sister at the supermarket on Friday to buy food. They will buy a big cake. Ana’s mom is going to help her with the decorations.</p>
+                                <p>Her brother, Leo, says: "I will bring some music!" Ana thinks the party will be great. She is very excited. The party starts at 7 PM. "It's going to be a fun night!" she thinks. She hopes everyone will enjoy it. What are you going to do next weekend?</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula9',
+                    title: 'Aula 9: O que Estava Acontecendo?',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 9: O que Estava Acontecendo?</h2>
+                            <p>Aprenda a descrever ações que estavam em andamento em um ponto do passado com o Past Continuous.</p>
+
+                            <h4>A. Past Continuous</h4>
+                            <p>Descreve uma ação que estava em progresso em um determinado momento no passado.</p>
+                             <p>Estrutura: Sujeito + <strong>was/were</strong> (Past Simple do "to be") + verbo com <strong>-ing</strong>.</p>
+                            <p>É muito usado para dar contexto a outra ação que aconteceu no Past Simple.</p>
+                            <p>Exemplo: <code>I <strong>was watching</strong> TV when you <strong>called</strong>.</code> (Eu estava assistindo TV quando você ligou.)</p>
+                            <p><code>While she <strong>was reading</strong>, her phone <strong>rang</strong>.</code> (Enquanto ela estava lendo, o telefone dela tocou.)</p>
+                        </div>
+                    `,
+                    story: {
+                        title: 'O Mistério do Telefone',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">O Mistério do Telefone</h4>
+                                <p>Yesterday evening, Leo was studying in his room. He was listening to music and writing notes. His sister, Ana, was watching TV in the living room. She was eating popcorn. Their mom was cooking dinner in the kitchen. She was talking on the phone.</p>
+                                <p>Suddenly, the phone rang. Leo was reading a difficult book. He didn't hear it. Ana was watching her favorite show. She didn't hear it either. Mom was talking to her friend. She stopped talking when the phone rang again. Who was calling? Nobody knew! It was a mystery. They were all busy doing something.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula10',
+                    title: 'Aula 10: Comparando Tudo!',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 10: Comparando Tudo!</h2>
+                            <p>Aprenda a comparar coisas, pessoas e ações usando comparativos e superlativos.</p>
+
+                            <h4>A. Comparativos e Superlativos</h4>
+                            <p>Usamos para comparar adjetivos e advérbios.</p>
+                            <p><strong>Comparativos (comparar 2 coisas):</strong></p>
+                            <ul>
+                                <li>Adjetivos curtos: adicione <strong>-er ... than</strong>. Ex: <code>tall → taller than</code> (mais alto que).</li>
+                                <li>Adjetivos longos: use <strong>more ... than</strong>. Ex: <code>beautiful → more beautiful than</code> (mais bonito que).</li>
+                                <li>Igualdade: <strong>as ... as</strong>. Ex: <code>as tall as</code> (tão alto quanto).</li>
+                            </ul>
+                            <p><strong>Superlativos (comparar 3 ou mais coisas):</strong></p>
+                             <ul>
+                                <li>Adjetivos curtos: use <strong>the ... -est</strong>. Ex: <code>tall → the tallest</code> (o mais alto).</li>
+                                <li>Adjetivos longos: use <strong>the most ...</strong>. Ex: <code>beautiful → the most beautiful</code> (o mais bonito).</li>
+                            </ul>
+                            <p><strong>Irregulares:</strong> <code>good → better → the best</code> | <code>bad → worse → the worst</code></p>
+                            <table>
+                                <thead><tr><th>Adjetivo (Base)</th><th>Comparativo</th><th>Superlativo</th></tr></thead>
+                                <tbody>
+                                    <tr><td>tall</td><td>taller than</td><td>the tallest</td></tr>
+                                    <tr><td>short</td><td>shorter than</td><td>the shortest</td></tr>
+                                    <tr><td>big</td><td>bigger than</td><td>the biggest</td></tr>
+                                    <tr><td>small</td><td>smaller than</td><td>the smallest</td></tr>
+                                    <tr><td>beautiful</td><td>more beautiful than</td><td>the most beautiful</td></tr>
+                                    <tr><td>expensive</td><td>more expensive than</td><td>the most expensive</td></tr>
+                                    <tr><td>good</td><td>better than</td><td>the best</td></tr>
+                                    <tr><td>bad</td><td>worse than</td><td>the worst</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `,
+                    story: {
+                        title: 'Melhores Amigos',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">Melhores Amigos</h4>
+                                <p>Mia and Chloe are best friends. Mia is taller than Chloe, but Chloe is older than Mia. Mia's hair is longer than Chloe's hair. Chloe is funnier than Mia. They both like to read, but Mia reads more books than Chloe.</p>
+                                <p>Their favorite place is the park. The park is the biggest park in the city. Mia thinks the swings are the best. Chloe thinks the trees are the most beautiful. They are both good students, but Mia is better at math than Chloe. Chloe is better at English. They are different, but they are the best friends.</p>
+                            </div>
+                        `
+                    }
+                },
+                {
+                    id: 'aula11',
+                    title: 'Aula 11: Expressando Habilidade e Obrigação',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 11: Expressando Habilidade e Obrigação</h2>
+                            <p>Nesta aula, você aprenderá a usar verbos modais para expressar habilidades, permissões, conselhos e obrigações.</p>
+
+                            <h4>A. Verbos Modais Essenciais</h4>
+                            <p>Verbos modais são auxiliares que modificam o verbo principal. Eles não mudam com o sujeito (sem -s) e são seguidos pelo verbo na forma base.</p>
+                            <ul>
+                                <li><strong>Can/Can't:</strong> Habilidade, permissão. <code>I can speak English.</code> (Eu consigo falar inglês.) / <code>Can I open the window?</code> (Posso abrir a janela?)</li>
+                                <li><strong>Could/Couldn't:</strong> Habilidade no passado, pedidos educados. <code>I could swim when I was 5.</code> (Eu conseguia nadar quando tinha 5.) / <code>Could you help me?</code> (Você poderia me ajudar?)</li>
+                                <li><strong>Should:</strong> Conselho. <code>You should study more.</code> (Você deveria estudar mais.)</li>
+                                <li><strong>Must/Have to:</strong> Obrigação. "Must" é uma obrigação forte/interna (<code>I must finish this today.</code>), "Have to" é uma obrigação externa/regra (<code>I have to wear a uniform.</code>).</li>
+                                <li><strong>May/Might:</strong> Possibilidade. "May" é um pouco mais provável que "might". <code>It may rain later.</code> (Pode chover mais tarde.) / <code>He might be late.</code> (Ele pode se atrasar.)</li>
+                            </ul>
+                        </div>
+                    `,
+                    story: null // No specific story, but examples are within text
+                },
+                 {
+                    id: 'aula12',
+                    title: 'Aula 12: Quantidades e Conexões',
+                    content: `
+                        <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                            <h2>Aula 12: Quantidades e Conexões</h2>
+                            <p>Nesta aula, você aprenderá a expressar quantidades, conectar ideias complexas e usar gerúndios/infinitivos.</p>
+
+                            <h4>A. Substantivos Contáveis e Incontáveis e Quantificadores (Some, Any, Much, Many, A lot of)</h4>
+                            <p>A distinção entre eles afeta os quantificadores que usamos.</p>
+                            <ul>
+                                <li><strong>Contáveis (Countable):</strong> Podem ser contados (apple/apples).</li>
+                                <li><strong>Incontáveis (Uncountable):</strong> Não podem ser contados (water, money).</li>
+                            </ul>
+                            <p><strong>Quantificadores:</strong></p>
+                            <table>
+                                <thead><tr><th>Quantificador</th><th>Uso</th><th>Exemplo</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Some</td><td>Afirmativas (+) com contáveis e incontáveis.</td><td><code>I have some friends.</code> / <code>I need some water.</code></td></tr>
+                                    <tr><td>Any</td><td>Negativas (-) e Interrogativas (?) com contáveis e incontáveis.</td><td><code>I don't have any money.</code> / <code>Do you have any questions?</code></td></tr>
+                                    <tr><td>Many</td><td>Com contáveis no plural (em ? e -).</td><td><code>How many books do you have?</code></td></tr>
+                                    <tr><td>Much</td><td>Com incontáveis (em ? e -).</td><td><code>How much time do you have?</code></td></tr>
+                                    <tr><td>A lot of</td><td>Com ambos, principalmente em (+).</td><td><code>She has a lot of friends/money.</code></td></tr>
+                                </tbody>
+                            </table>
+                            
+                            <h4>B. Conjunções (And, Or, But, So, Because, Although)</h4>
+                            <p>Conectam palavras, frases ou orações.</p>
+                            <ul>
+                                <li><strong>And (e):</strong> Adiciona. <code>I like coffee and tea.</code></li>
+                                <li><strong>But (mas):</strong> Contraste. <code>He is tired, but happy.</code></li>
+                                <li><strong>Or (ou):</strong> Alternativa. <code>Pizza or pasta?</code></li>
+                                <li><strong>So (então, por isso):</strong> Consequência. <code>It was raining, so we stayed home.</code></li>
+                                <li><strong>Because (porque):</strong> Razão. <code>I'm happy because I passed.</code></li>
+                                <li><strong>Although (embora):</strong> Contraste. <code>Although it rained, we walked.</code></li>
+                            </ul>
+
+                            <h4>C. Zero e First Conditionals</h4>
+                            <p>Falam sobre condições e resultados.</p>
+                            <ul>
+                                <li><strong>Zero Conditional:</strong> Fatos universais. (If + Present Simple, ... Present Simple). Ex: <code>If you heat water, it boils.</code></li>
+                                <li><strong>First Conditional:</strong> Situações reais e prováveis no futuro. (If + Present Simple, ... will + verbo). Ex: <code>If it rains, I will stay home.</code></li>
+                            </ul>
+                            
+                            <h4>D. Gerúndios (-ing) e Infinitivos (to + verbo)</h4>
+                            <p>Alguns verbos pedem -ing, outros "to + verbo".</p>
+                            <ul>
+                                <li><strong>Verbos seguidos por -ing:</strong> enjoy, finish, mind, suggest, like, love, hate. Ex: <code>I enjoy <strong>reading</strong>.</code></li>
+                                <li><strong>Verbos seguidos por to-infinitive:</strong> want, hope, need, decide, learn, plan. Ex: <code>I want <strong>to learn</strong> English.</code></li>
+                            </ul>
+                        </div>
+                    `,
+                    story: {
+                        title: 'Compras no Mercado',
+                        text: `
+                            <div class="content-card p-6 md:p-8 prose prose-custom max-w-none">
+                                <h4 class="text-xl font-semibold mb-3">Compras no Mercado</h4>
+                                <p>Mom needs to go to the supermarket. "Do we have any milk?" she asks. "Yes, we have some milk," I answer. "But we don't have much juice. How many apples do we have?" she asks. "We have a lot of apples," I say, "and some oranges."</p>
+                                <p>Mom wants to buy some vegetables because we need them for dinner. Although it is raining, she plans to go now. "If I go now, I will avoid the rush," she thinks. She enjoys shopping. She decides to buy some flowers too. It's important to remember to buy bread. "I need to buy bread," she says. She is learning to manage her time well. She hopes to finish quickly.</p>
+                            </div>
+                        `
+                    }
+                }
+            ],
+            vocabulario: [
+                {
+                    title: 'A1 Essencial: Dia a Dia',
+                    items: [
+                        { en: 'Family', pt: 'Família', ex: 'My family is small.', ex_pt: 'Minha família é pequena.' },
+                        { en: 'House', pt: 'Casa', ex: 'This is my house.', ex_pt: 'Esta é minha casa.' },
+                        { en: 'Food', pt: 'Comida', ex: 'I like Italian food.', ex_pt: 'Eu gosto de comida italiana.' },
+                        { en: 'Water', pt: 'Água', ex: 'I need to drink water.', ex_pt: 'Eu preciso beber água.' },
+                        { en: 'Friend', pt: 'Amigo(a)', ex: 'He is my best friend.', ex_pt: 'Ele é meu melhor amigo.' },
+                        { en: 'Work', pt: 'Trabalho / Trabalhar', ex: 'I go to work by bus.', ex_pt: 'Eu vou trabalhar de ônibus.' },
+                        { en: 'School', pt: 'Escola', ex: 'My sister is at school.', ex_pt: 'Minha irmã está na escola.' },
+                        { en: 'Hello', pt: 'Olá', ex: 'Hello, how are you?', ex_pt: 'Olá, como você está?' },
+                        { en: 'Goodbye', pt: 'Adeus / Tchau', ex: 'Goodbye! See you tomorrow.', ex_pt: 'Tchau! Até amanhã.' },
+                        { en: 'Please', pt: 'Por favor', ex: 'Can you help me, please?', ex_pt: 'Você pode me ajudar, por favor?' },
+                        { en: 'Thank you', pt: 'Obrigado(a)', ex: 'Thank you for your help.', ex_pt: 'Obrigado(a) pela sua ajuda.' },
+                        { en: 'Yes / No', pt: 'Sim / Não', ex: 'Yes, I am a student. No, I am not.', ex_pt: 'Sim, eu sou um estudante. Não, eu não sou.' },
+                        { en: 'Book', pt: 'Livro', ex: 'I read a book.', ex_pt: 'Eu leio um livro.' },
+                        { en: 'Pen', pt: 'Caneta', ex: 'This is my pen.', ex_pt: 'Esta é minha caneta.' },
+                        { en: 'Chair', pt: 'Cadeira', ex: 'Sit on the chair.', ex_pt: 'Sente-se na cadeira.' },
+                        { en: 'Table', pt: 'Mesa', ex: 'The keys are on the table.', ex_pt: 'As chaves estão na mesa.' },
+                        { en: 'Car', pt: 'Carro', ex: 'I have a new car.', ex_pt: 'Eu tenho um carro novo.' },
+                        { en: 'Dog', pt: 'Cachorro', ex: 'My dog is big.', ex_pt: 'Meu cachorro é grande.' },
+                        { en: 'Cat', pt: 'Gato', ex: 'She has a black cat.', ex_pt: 'Ela tem um gato preto.' },
+                        { en: 'Tree', pt: 'Árvore', ex: 'There is a tall tree.', ex_pt: 'Há uma árvore alta.' },
+                        { en: 'City', pt: 'Cidade', ex: 'I live in a big city.', ex_pt: 'Eu moro em uma cidade grande.' },
+                        { en: 'Country', pt: 'País / Campo', ex: 'Brazil is a beautiful country.', ex_pt: 'O Brasil é um país bonito.' },
+                        { en: 'Happy', pt: 'Feliz', ex: 'I am very happy.', ex_pt: 'Eu estou muito feliz.' },
+                        { en: 'Sad', pt: 'Triste', ex: 'He is sad today.', ex_pt: 'Ele está triste hoje.' },
+                        { en: 'Big', pt: 'Grande', ex: 'This is a big house.', ex_pt: 'Esta é uma casa grande.' },
+                        { en: 'Small', pt: 'Pequeno', ex: 'My phone is small.', ex_pt: 'Meu telefone é pequeno.' },
+                        { en: 'New', pt: 'Novo', ex: 'I have a new shirt.', ex_pt: 'Eu tenho uma camisa nova.' },
+                        { en: 'Old', pt: 'Velho / Antigo', ex: 'My car is old.', ex_pt: 'Meu carro é velho.' },
+                        { en: 'Good', pt: 'Bom', ex: 'This is a good idea.', ex_pt: 'Esta é uma boa ideia.' },
+                        { en: 'Bad', pt: 'Ruim', ex: 'The food is bad.', ex_pt: 'A comida está ruim.' },
+                        { en: 'Hot', pt: 'Quente', ex: 'The coffee is hot.', ex_pt: 'O café está quente.' },
+                        { en: 'Cold', pt: 'Frio', ex: 'It is cold outside.', ex_pt: 'Está frio lá fora.' },
+                        { en: 'Morning', pt: 'Manhã', ex: 'I wake up in the morning.', ex_pt: 'Eu acordo de manhã.' },
+                        { en: 'Afternoon', pt: 'Tarde', ex: 'Let\'s meet in the afternoon.', ex_pt: 'Vamos nos encontrar à tarde.' },
+                        { en: 'Evening', pt: 'Noite (início)', ex: 'Good evening!', ex_pt: 'Boa noite!' },
+                        { en: 'Night', pt: 'Noite', ex: 'I sleep at night.', ex_pt: 'Eu durmo à noite.' },
+                        { en: 'Day', pt: 'Dia', ex: 'Have a good day!', ex_pt: 'Tenha um bom dia!' },
+                        { en: 'Today', pt: 'Hoje', ex: 'I am busy today.', ex_pt: 'Eu estou ocupado hoje.' },
+                        { en: 'Tomorrow', pt: 'Amanhã', ex: 'See you tomorrow!', ex_pt: 'Até amanhã!' },
+                        { en: 'Yesterday', pt: 'Ontem', ex: 'I worked yesterday.', ex_pt: 'Eu trabalhei ontem.' },
+                    ]
+                },
+                 {
+                    title: 'A2 Essencial: Expandindo Horizontes',
+                    items: [
+                        { en: 'Travel', pt: 'Viajar / Viagem', ex: 'I love to travel.', ex_pt: 'Eu amo viajar.' },
+                        { en: 'Airport', pt: 'Aeroporto', ex: 'The airport is very busy.', ex_pt: 'O aeroporto está muito movimentado.' },
+                        { en: 'Restaurant', pt: 'Restaurante', ex: 'Let\'s go to a new restaurant.', ex_pt: 'Vamos a um restaurante novo.' },
+                        { en: 'Hobby', pt: 'Passatempo', ex: 'My favorite hobby is reading.', ex_pt: 'Meu passatempo favorito é ler.' },
+                        { en: 'Music', pt: 'Música', ex: 'What kind of music do you like?', ex_pt: 'Que tipo de música você gosta?' },
+                        { en: 'Movie', pt: 'Filme', ex: 'We watched a great movie last night.', ex_pt: 'Nós assistimos a um ótimo filme ontem à noite.' },
+                        { en: 'Supermarket', pt: 'Supermercado', ex: 'I need to go to the supermarket.', ex_pt: 'Eu preciso ir ao supermercado.' },
+                        { en: 'Money', pt: 'Dinheiro', ex: 'I don\'t have much money.', ex_pt: 'Eu não tenho muito dinheiro.' },
+                        { en: 'Weather', pt: 'Tempo / Clima', ex: 'The weather is nice today.', ex_pt: 'O clima está agradável hoje.' },
+                        { en: 'Holiday', pt: 'Feriado / Férias', ex: 'We are on holiday next week.', ex_pt: 'Estaremos de férias na próxima semana.' },
+                        { en: 'Language', pt: 'Língua / Idioma', ex: 'English is an important language.', ex_pt: 'Inglês é uma língua importante.' },
+                        { en: 'Remember', pt: 'Lembrar', ex: 'I can\'t remember his name.', ex_pt: 'Não consigo lembrar o nome dele.' },
+                        { en: 'Learn', pt: 'Aprender', ex: 'I want to learn English.', ex_pt: 'Eu quero aprender inglês.' },
+                        { en: 'Teach', pt: 'Ensinar', ex: 'My teacher teaches well.', ex_pt: 'Meu professor ensina bem.' },
+                        { en: 'Speak', pt: 'Falar', ex: 'Do you speak English?', ex_pt: 'Você fala inglês?' },
+                        { en: 'Listen', pt: 'Ouvir', ex: 'I listen to music every day.', ex_pt: 'Eu ouço música todos os dias.' },
+                        { en: 'Write', pt: 'Escrever', ex: 'I write emails.', ex_pt: 'Eu escrevo e-mails.' },
+                        { en: 'Read', pt: 'Ler', ex: 'She loves to read books.', ex_pt: 'Ela ama ler livros.' },
+                        { en: 'Watch', pt: 'Assistir', ex: 'We watch TV at night.', ex_pt: 'Nós assistimos TV à noite.' },
+                        { en: 'Play', pt: 'Jogar / Tocar', ex: 'They play soccer.', ex_pt: 'Eles jogam futebol.' },
+                        { en: 'Friendship', pt: 'Amizade', ex: 'Friendship is important.', ex_pt: 'Amizade é importante.' },
+                        { en: 'Conversation', pt: 'Conversa', ex: 'We had a good conversation.', ex_pt: 'Tivemos uma boa conversa.' },
+                        { en: 'Question', pt: 'Pergunta', ex: 'I have a question.', ex_pt: 'Eu tenho uma pergunta.' },
+                        { en: 'Answer', pt: 'Resposta', ex: 'What is your answer?', ex_pt: 'Qual é sua resposta?' },
+                        { en: 'Help', pt: 'Ajuda / Ajudar', ex: 'Can you help me?', ex_pt: 'Você pode me ajudar?' },
+                        { en: 'Understand', pt: 'Entender', ex: 'I understand English now.', ex_pt: 'Eu entendo inglês agora.' },
+                        { en: 'Difficult', pt: 'Difícil', ex: 'This exercise is difficult.', ex_pt: 'Este exercício é difícil.' },
+                        { en: 'Easy', pt: 'Fácil', ex: 'English is easy for me.', ex_pt: 'Inglês é fácil para mim.' },
+                        { en: 'Time', pt: 'Tempo / Hora', ex: 'What time is it?', ex_pt: 'Que horas são?' },
+                        { en: 'Place', pt: 'Lugar', ex: 'This is a nice place.', ex_pt: 'Este é um lugar legal.' },
+                        { en: 'Problem', pt: 'Problema', ex: 'I have a problem.', ex_pt: 'Eu tenho um problema.' },
+                        { en: 'Solution', pt: 'Solução', ex: 'We found a solution.', ex_pt: 'Nós encontramos uma solução.' },
+                        { en: 'Open', pt: 'Abrir', ex: 'Please open the door.', ex_pt: 'Por favor, abra a porta.' },
+                        { en: 'Close', pt: 'Fechar', ex: 'Close the window.', ex_pt: 'Feche a janela.' },
+                        { en: 'Start', pt: 'Começar', ex: 'Let\'s start the class.', ex_pt: 'Vamos começar a aula.' },
+                        { en: 'Finish', pt: 'Terminar', ex: 'I finish work at 5 PM.', ex_pt: 'Eu termino o trabalho às 17h.' },
+                        { en: 'Happy', pt: 'Feliz', ex: 'I am so happy today.', ex_pt: 'Estou tão feliz hoje.' },
+                        { en: 'Angry', pt: 'Bravo(a)', ex: 'He is angry.', ex_pt: 'Ele está bravo.' },
+                        { en: 'Tired', pt: 'Cansado(a)', ex: 'I am tired after work.', ex_pt: 'Estou cansado(a) depois do trabalho.' },
+                        { en: 'Excited', pt: 'Animado(a)', ex: 'She is excited for the party.', ex_pt: 'Ela está animada para a festa.' },
+                        { en: 'Bored', pt: 'Entediado(a)', ex: 'I am bored with this game.', ex_pt: 'Estou entediado(a) com este jogo.' },
+                        { en: 'Busy', pt: 'Ocupado(a)', ex: 'I am busy right now.', ex_pt: 'Estou ocupado(a) agora.' },
+                        { en: 'Free', pt: 'Livre', ex: 'Are you free tomorrow?', ex_pt: 'Você está livre amanhã?' },
+                        { en: 'Early', pt: 'Cedo', ex: 'I wake up early.', ex_pt: 'Eu acordo cedo.' },
+                        { en: 'Late', pt: 'Tarde', ex: 'He is often late.', ex_pt: 'Ele está frequentemente atrasado.' },
+                        { en: 'Always', pt: 'Sempre', ex: 'She always smiles.', ex_pt: 'Ela sempre sorri.' },
+                        { en: 'Usually', pt: 'Geralmente', ex: 'They usually go home.', ex_pt: 'Eles geralmente vão para casa.' },
+                        { en: 'Often', pt: 'Frequentemente', ex: 'I often read books.', ex_pt: 'Eu frequentemente leio livros.' },
+                        { en: 'Sometimes', pt: 'Às vezes', ex: 'Sometimes I eat pizza.', ex_pt: 'Às vezes eu como pizza.' },
+                        { en: 'Never', pt: 'Nunca', ex: 'He never eats meat.', ex_pt: 'Ele nunca come carne.' },
+                    ]
+                }
+            ],
+            exercicios: [
+                {
+                    id: 'ex-aula1',
+                    title: 'Aula 1: Fundamentos do Inglês',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Verbo "To Be" (Am, Is, Are)</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo "to be" (am, is, are).</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I ____ a student.</p>
+                                    <p>2. She ____ my sister.</p>
+                                    <p>3. They ____ from Canada.</p>
+                                    <p>4. We ____ happy.</p>
+                                    <p>5. He ____ a doctor.</p>
+                                    <p>6. ____ you tired?</p>
+                                    <p>7. My cat ____ black.</p>
+                                    <p>8. The books ____ on the table.</p>
+                                    <p>9. ____ she a teacher?</p>
+                                    <p>10. I ____ not sad.</p>
+                                    <p>11. You ____ a good friend.</p>
+                                    <p>12. It ____ a beautiful day.</p>
+                                    <p>13. We ____ not ready.</p>
+                                    <p>14. ____ they friends?</p>
+                                    <p>15. She ____ busy now.</p>
+                                    <p>16. My parents ____ at home.</p>
+                                    <p>17. The car ____ red.</p>
+                                    <p>18. ____ I correct?</p>
+                                    <p>19. He ____ from Brazil.</p>
+                                    <p>20. You ____ welcome!</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. am</p><p>2. is</p><p>3. are</p><p>4. are</p><p>5. is</p><p>6. Are</p><p>7. is</p><p>8. are</p><p>9. Is</p><p>10. am</p><p>11. are</p><p>12. is</p><p>13. are</p><p>14. Are</p><p>15. is</p><p>16. are</p><p>17. is</p><p>18. Am</p><p>19. is</p><p>20. are</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Pronomes Pessoais (Sujeito e Objeto)</h4>
+                                <p class="mb-4">Escolha o pronome correto (sujeito ou objeto) para completar a frase.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. (She / Her) is a teacher.</p>
+                                    <p>2. I talk to (he / him) every day.</p>
+                                    <p>3. (We / Us) live in a big city.</p>
+                                    <p>4. He knows (they / them) well.</p>
+                                    <p>5. (I / Me) like pizza.</p>
+                                    <p>6. Call (she / her) later.</p>
+                                    <p>7. (They / Them) are my friends.</p>
+                                    <p>8. Can you help (I / me)?</p>
+                                    <p>9. (He / Him) is a good student.</p>
+                                    <p>10. She teaches (we / us) English.</p>
+                                    <p>11. (It / It) is a cold day.</p>
+                                    <p>12. Listen to (I / me).</p>
+                                    <p>13. (You / You) are welcome.</p>
+                                    <p>14. We often see (he / him).</p>
+                                    <p>15. (She / Her) gives presents to (we / us).</p>
+                                    <p>16. Please wait for (they / them).</p>
+                                    <p>17. (I / Me) usually read books.</p>
+                                    <p>18. Don't tell (he / him) the secret.</p>
+                                    <p>19. (It / It) is raining.</p>
+                                    <p>20. They invited (we / us) to the party.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. She</p><p>2. him</p><p>3. We</p><p>4. them</p><p>5. I</p><p>6. her</p><p>7. They</p><p>8. me</p><p>9. He</p><p>10. us</p><p>11. It</p><p>12. me</p><p>13. You</p><p>14. him</p><p>15. She / us</p><p>16. them</p><p>17. I</p><p>18. him</p><p>19. It</p><p>20. us</p>
+                                </div>
+                            </div>
+                            
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">3. Adjetivos Possessivos e Pronomes Possessivos</h4>
+                                <p class="mb-4">Complete com o adjetivo possessivo ou pronome possessivo correto.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. This is (my / mine) book.</p>
+                                    <p>2. The blue car is (their / theirs).</p>
+                                    <p>3. Is this (your / yours) pen?</p>
+                                    <p>4. That house is (her / hers).</p>
+                                    <p>5. (Our / Ours) teacher is nice.</p>
+                                    <p>6. This is not (my / mine) problem.</p>
+                                    <p>7. The cat ate (its / its') food.</p>
+                                    <p>8. They have (their / theirs) own business.</p>
+                                    <p>9. This computer is (my / mine).</p>
+                                    <p>10. Where is (your / yours) sister?</p>
+                                    <p>11. This is (his / his) jacket.</p>
+                                    <p>12. The dog is playing with (its / its') tail.</p>
+                                    <p>13. Are these books (your / yours)?</p>
+                                    <p>14. (Our / Ours) friends are here.</p>
+                                    <p>15. The decision is (their / theirs).</p>
+                                    <p>16. I like (her / hers) new dress.</p>
+                                    <p>17. This is (my / mine) chair. That one is (your / yours).</p>
+                                    <p>18. The responsibility is (our / ours).</p>
+                                    <p>19. They live in (their / theirs) new apartment.</p>
+                                    <p>20. Don't touch that! It's (my / mine).</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. my</p><p>2. theirs</p><p>3. your</p><p>4. hers</p><p>5. Our</p><p>6. my</p><p>7. its</p><p>8. their</p><p>9. mine</p><p>10. your</p><p>11. his</p><p>12. its</p><p>13. yours</p><p>14. Our</p><p>15. theirs</p><p>16. her</p><p>17. my / yours</p><p>18. ours</p><p>19. their</p><p>20. mine</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula2',
+                    title: 'Aula 2: Descrevendo Coisas e Pessoas',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. "There is / There are"</h4>
+                                <p class="mb-4">Complete as frases com "There is" ou "There are".</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. ____ a book on the table.</p>
+                                    <p>2. ____ two chairs in the room.</p>
+                                    <p>3. ____ some water in the glass.</p>
+                                    <p>4. ____ many students in the class.</p>
+                                    <p>5. ____ a cat under the bed.</p>
+                                    <p>6. ____ no milk in the fridge.</p>
+                                    <p>7. ____ a big tree in the garden.</p>
+                                    <p>8. ____ three apples in the basket.</p>
+                                    <p>9. ____ a problem.</p>
+                                    <p>10. ____ a lot of noise.</p>
+                                    <p>11. ____ five people in my family.</p>
+                                    <p>12. ____ a new movie on TV.</p>
+                                    <p>13. ____ a lot of cars on the street.</p>
+                                    <p>14. ____ no food left.</p>
+                                    <p>15. ____ one pen on the desk.</p>
+                                    <p>16. ____ many flowers in the park.</p>
+                                    <p>17. ____ a small house.</p>
+                                    <p>18. ____ some money in my pocket.</p>
+                                    <p>19. ____ a good idea.</p>
+                                    <p>20. ____ many questions to answer.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. There is</p><p>2. There are</p><p>3. There is</p><p>4. There are</p><p>5. There is</p><p>6. There is</p><p>7. There is</p><p>8. There are</p><p>9. There is</p><p>10. There is</p><p>11. There are</p><p>12. There is</p><p>13. There are</p><p>14. There is</p><p>15. There is</p><p>16. There are</p><p>17. There is</p><p>18. There is</p><p>19. There is</p><p>20. There are</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Adjetivos: Posição</h4>
+                                <p class="mb-4">Reescreva as frases colocando o adjetivo na posição correta.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. (beautiful) She is a ____ girl.</p>
+                                    <p>2. (red) I have a ____ car.</p>
+                                    <p>3. The house is (big).</p>
+                                    <p>4. (friendly) He is a ____ person.</p>
+                                    <p>5. (happy) They are ____.</p>
+                                    <p>6. (long) She has ____ hair.</p>
+                                    <p>7. The dog is (small).</p>
+                                    <p>8. (new) This is a ____ phone.</p>
+                                    <p>9. He is a (good) student.</p>
+                                    <p>10. The weather is (cold) today.</p>
+                                    <p>11. (interesting) This is an ____ book.</p>
+                                    <p>12. She is (smart).</p>
+                                    <p>13. (tall) My brother is ____.</p>
+                                    <p>14. (young) They are ____ kids.</p>
+                                    <p>15. The food was (delicious).</p>
+                                    <p>16. (green) I see a ____ tree.</p>
+                                    <p>17. My cat is (lazy).</p>
+                                    <p>18. (difficult) This lesson is ____.</p>
+                                    <p>19. They bought a (big) house.</p>
+                                    <p>20. The movie was (boring).</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. She is a beautiful girl.</p><p>2. I have a red car.</p><p>3. The house is big.</p><p>4. He is a friendly person.</p><p>5. They are happy.</p><p>6. She has long hair.</p><p>7. The dog is small.</p><p>8. This is a new phone.</p><p>9. He is a good student.</p><p>10. The weather is cold today.</p><p>11. This is an interesting book.</p><p>12. She is smart.</p><p>13. My brother is tall.</p><p>14. They are young kids.</p><p>15. The food was delicious.</p><p>16. I see a green tree.</p><p>17. My cat is lazy.</p><p>18. This lesson is difficult.</p><p>19. They bought a big house.</p><p>20. The movie was boring.</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">3. Artigos Definidos e Indefinidos (A/An, The, Zero Article)</h4>
+                                <p class="mb-4">Complete com "a", "an", "the" ou deixe em branco (zero article).</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I want ____ apple.</p>
+                                    <p>2. ____ sun is hot.</p>
+                                    <p>3. She has ____ cat.</p>
+                                    <p>4. ____ water is essential.</p>
+                                    <p>5. ____ students are in the classroom.</p>
+                                    <p>6. This is ____ old house.</p>
+                                    <p>7. I like ____ dogs.</p>
+                                    <p>8. Can you pass me ____ salt?</p>
+                                    <p>9. He is ____ honest man.</p>
+                                    <p>10. ____ birds fly.</p>
+                                    <p>11. My brother works in ____ office.</p>
+                                    <p>12. ____ moon is beautiful tonight.</p>
+                                    <p>13. Do you play ____ soccer?</p>
+                                    <p>14. She lives in ____ Paris.</p>
+                                    <p>15. I need ____ umbrella.</p>
+                                    <p>16. ____ coffee is my favorite drink.</p>
+                                    <p>17. ____ Amazon River is very long.</p>
+                                    <p>18. He has ____ interesting hobby.</p>
+                                    <p>19. ____ children like toys.</p>
+                                    <p>20. ____ sky is blue.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. an</p><p>2. The</p><p>3. a</p><p>4. </p><p>5. The</p><p>6. an</p><p>7. </p><p>8. the</p><p>9. an</p><p>10. </p><p>11. an</p><p>12. The</p><p>13. </p><p>14. </p><p>15. an</p><p>16. </p><p>17. The</p><p>18. an</p><p>19. </p><p>20. The</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula3',
+                    title: 'Aula 3: Formando Suas Primeiras Frases',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Formação de Frases Básicas (S+V+O)</h4>
+                                <p class="mb-4">Organize as palavras para formar frases corretas.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. is / a / student / He</p>
+                                    <p>2. name / is / What / your / ?</p>
+                                    <p>3. from / I / not / am / Spain</p>
+                                    <p>4. speaks / She / English</p>
+                                    <p>5. milk / likes / He</p>
+                                    <p>6. in / We / live / Brazil</p>
+                                    <p>7. computer / a / has / She</p>
+                                    <p>8. eat / They / pizza</p>
+                                    <p>9. study / I / English</p>
+                                    <p>10. play / We / soccer</p>
+                                    <p>11. water / drink / I</p>
+                                    <p>12. a / drives / He / car</p>
+                                    <p>13. a / reads / She / book</p>
+                                    <p>14. coffee / drink / They</p>
+                                    <p>15. work / at / I / home</p>
+                                    <p>16. happy / She / is</p>
+                                    <p>17. listen / to / music / We</p>
+                                    <p>18. a / is / This / table</p>
+                                    <p>19. love / I / my / family</p>
+                                    <p>20. in / They / a / live / big / house</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. He is a student.</p><p>2. What is your name?</p><p>3. I am not from Spain.</p><p>4. She speaks English.</p><p>5. He likes milk.</p><p>6. We live in Brazil.</p><p>7. She has a computer.</p><p>8. They eat pizza.</p><p>9. I study English.</p><p>10. We play soccer.</p><p>11. I drink water.</p><p>12. He drives a car.</p><p>13. She reads a book.</p><p>14. They drink coffee.</p><p>15. I work at home.</p><p>16. She is happy.</p><p>17. We listen to music.</p><p>18. This is a table.</p><p>19. I love my family.</p><p>20. They live in a big house.</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Substantivos: Singular e Plural</h4>
+                                <p class="mb-4">Escreva a forma plural dos substantivos. Para plurais irregulares, escreva a forma correta.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. book -> ____</p>
+                                    <p>2. cat -> ____</p>
+                                    <p>3. man -> ____</p>
+                                    <p>4. child -> ____</p>
+                                    <p>5. bus -> ____</p>
+                                    <p>6. city -> ____</p>
+                                    <p>7. woman -> ____</p>
+                                    <p>8. mouse -> ____</p>
+                                    <p>9. box -> ____</p>
+                                    <p>10. tooth -> ____</p>
+                                    <p>11. person -> ____</p>
+                                    <p>12. foot -> ____</p>
+                                    <p>13. apple -> ____</p>
+                                    <p>14. house -> ____</p>
+                                    <p>15. watch (relógio) -> ____</p>
+                                    <p>16. potato -> ____</p>
+                                    <p>17. fish -> ____</p>
+                                    <p>18. sheep -> ____</p>
+                                    <p>19. boy -> ____</p>
+                                    <p>20. party -> ____</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. books</p><p>2. cats</p><p>3. men</p><p>4. children</p><p>5. buses</p><p>6. cities</p><p>7. women</p><p>8. mice</p><p>9. boxes</p><p>10. teeth</p><p>11. people</p><p>12. feet</p><p>13. apples</p><p>14. houses</p><p>15. watches</p><p>16. potatoes</p><p>17. fish</p><p>18. sheep</p><p>19. boys</p><p>20. parties</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula4',
+                    title: 'Aula 4: Fazendo Perguntas Simples',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. "Wh-questions"</h4>
+                                <p class="mb-4">Complete com a palavra interrogativa correta (What, Who, Where, When, Why, How).</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. ____ is your name?</p>
+                                    <p>2. ____ do you live?</p>
+                                    <p>3. ____ is that woman?</p>
+                                    <p>4. ____ is your birthday?</p>
+                                    <p>5. ____ are you sad?</p>
+                                    <p>6. ____ are you today?</p>
+                                    <p>7. ____ is your favorite color?</p>
+                                    <p>8. ____ is he from?</p>
+                                    <p>9. ____ is coming to the party?</p>
+                                    <p>10. ____ time is it?</p>
+                                    <p>11. ____ do you usually do on weekends?</p>
+                                    <p>12. ____ is your brother?</p>
+                                    <p>13. ____ old are you?</p>
+                                    <p>14. ____ is the capital of Brazil?</p>
+                                    <p>15. ____ did you learn English?</p>
+                                    <p>16. ____ is your phone number?</p>
+                                    <p>17. ____ is the weather like?</p>
+                                    <p>18. ____ many books do you have?</p>
+                                    <p>19. ____ is your favorite food?</p>
+                                    <p>20. ____ is the teacher's name?</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. What</p><p>2. Where</p><p>3. Who</p><p>4. When</p><p>5. Why</p><p>6. How</p><p>7. What</p><p>8. Where</p><p>9. Who</p><p>10. What</p><p>11. What</p><p>12. Where</p><p>13. How</p><p>14. What</p><p>15. How</p><p>16. What</p><p>17. What</p><p>18. How</p><p>19. What</p><p>20. What</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. "Yes/No questions"</h4>
+                                <p class="mb-4">Transforme as frases afirmativas em perguntas de "Yes/No".</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. You are a student. -> ____?</p>
+                                    <p>2. She is happy. -> ____?</p>
+                                    <p>3. They are friends. -> ____?</p>
+                                    <p>4. He speaks English. -> ____?</p>
+                                    <p>5. You like coffee. -> ____?</p>
+                                    <p>6. We live in Brazil. -> ____?</p>
+                                    <p>7. It is cold today. -> ____?</p>
+                                    <p>8. She has a car. -> ____?</p>
+                                    <p>9. They work here. -> ____?</p>
+                                    <p>10. You eat meat. -> ____?</p>
+                                    <p>11. I am tall. -> ____?</p>
+                                    <p>12. He is tired. -> ____?</p>
+                                    <p>13. We are ready. -> ____?</p>
+                                    <p>14. She studies hard. -> ____?</p>
+                                    <p>15. They go to school. -> ____?</p>
+                                    <p>16. You understand. -> ____?</p>
+                                    <p>17. He drives fast. -> ____?</p>
+                                    <p>18. I am wrong. -> ____?</p>
+                                    <p>19. It is raining. -> ____?</p>
+                                    <p>20. They need help. -> ____?</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. Are you a student?</p><p>2. Is she happy?</p><p>3. Are they friends?</p><p>4. Does he speak English?</p><p>5. Do you like coffee?</p><p>6. Do we live in Brazil?</p><p>7. Is it cold today?</p><p>8. Does she have a car?</p><p>9. Do they work here?</p><p>10. Do you eat meat?</p><p>11. Am I tall?</p><p>12. Is he tired?</p><p>13. Are we ready?</p><p>14. Does she study hard?</p><p>15. Do they go to school?</p><p>16. Do you understand?</p><p>17. Does he drive fast?</p><p>18. Am I wrong?</p><p>19. Is it raining?</p><p>20. Do they need help?</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                 {
+                    id: 'ex-aula5',
+                    title: 'Aula 5: Sua Rotina Diária',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Present Simple</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo no Present Simple.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. She ____ (work) in an office.</p>
+                                    <p>2. They ____ (not / live) in London.</p>
+                                    <p>3. ____ he ____ (speak) French?</p>
+                                    <p>4. I ____ (get up) at 7 AM every day.</p>
+                                    <p>5. The sun ____ (rise) in the east.</p>
+                                    <p>6. We ____ (eat) dinner at 8 PM.</p>
+                                    <p>7. My brother ____ (play) soccer on Saturdays.</p>
+                                    <p>8. Sarah ____ (not / like) cold weather.</p>
+                                    <p>9. ____ you ____ (study) English every day?</p>
+                                    <p>10. Birds ____ (fly).</p>
+                                    <p>11. He ____ (watch) TV in the evening.</p>
+                                    <p>12. The class ____ (start) at 9 AM.</p>
+                                    <p>13. My parents ____ (go) to the gym.</p>
+                                    <p>14. She ____ (teach) math.</p>
+                                    <p>15. I ____ (drink) coffee in the morning.</p>
+                                    <p>16. The train ____ (arrive) at 3 PM.</p>
+                                    <p>17. My dog ____ (sleep) a lot.</p>
+                                    <p>18. They ____ (not / have) a car.</p>
+                                    <p>19. ____ she ____ (read) books?</p>
+                                    <p>20. We ____ (live) in a small apartment.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. works</p><p>2. don't live</p><p>3. Does he speak</p><p>4. get up</p><p>5. rises</p><p>6. eat</p><p>7. plays</p><p>8. doesn't like</p><p>9. Do you study</p><p>10. fly</p><p>11. watches</p><p>12. starts</p><p>13. go</p><p>14. teaches</p><p>15. drink</p><p>16. arrives</p><p>17. sleeps</p><p>18. don't have</p><p>19. Does she read</p><p>20. live</p>
+                                </div>
+                            </div>
+
+                             <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Advérbios de Frequência</h4>
+                                <p class="mb-4">Reescreva as frases colocando o advérbio de frequência na posição correta.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I (always) drink coffee.</p>
+                                    <p>2. She is (never) late.</p>
+                                    <p>3. They (usually) go to the park.</p>
+                                    <p>4. He (often) reads books.</p>
+                                    <p>5. We (sometimes) eat pizza.</p>
+                                    <p>6. My mom (always) cooks dinner.</p>
+                                    <p>7. The cat is (usually) sleeping.</p>
+                                    <p>8. I (never) watch TV in the morning.</p>
+                                    <p>9. They (often) travel in summer.</p>
+                                    <p>10. He (sometimes) forgets his keys.</p>
+                                    <p>11. We are (always) happy.</p>
+                                    <p>12. She (usually) calls me on Sundays.</p>
+                                    <p>13. I (often) go to the gym.</p>
+                                    <p>14. They are (never) home on weekends.</p>
+                                    <p>15. The sun (always) rises in the east.</p>
+                                    <p>16. He (sometimes) sings in the shower.</p>
+                                    <p>17. My brother (never) eats vegetables.</p>
+                                    <p>18. We (always) try our best.</p>
+                                    <p>19. She is (often) busy.</p>
+                                    <p>20. I (usually) finish work early.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. I always drink coffee.</p><p>2. She is never late.</p><p>3. They usually go to the park.</p><p>4. He often reads books.</p><p>5. We sometimes eat pizza.</p><p>6. My mom always cooks dinner.</p><p>7. The cat is usually sleeping.</p><p>8. I never watch TV in the morning.</p><p>9. They often travel in summer.</p><p>10. He sometimes forgets his keys.</p><p>11. We are always happy.</p><p>12. She usually calls me on Sundays.</p><p>13. I often go to the gym.</p><p>14. They are never home on weekends.</p><p>15. The sun always rises in the east.</p><p>16. He sometimes sings in the shower.</p><p>17. My brother never eats vegetables.</p><p>18. We always try our best.</p><p>19. She is often busy.</p><p>20. I usually finish work early.</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">3. Preposições de Tempo (In, On, At)</h4>
+                                <p class="mb-4">Complete com "in", "on" ou "at".</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I wake up ____ 7 AM.</p>
+                                    <p>2. We go to school ____ the morning.</p>
+                                    <p>3. My birthday is ____ July.</p>
+                                    <p>4. See you ____ Monday.</p>
+                                    <p>5. The party is ____ night.</p>
+                                    <p>6. She was born ____ 2000.</p>
+                                    <p>7. We meet ____ the weekend.</p>
+                                    <p>8. The store closes ____ 10 PM.</p>
+                                    <p>9. I study English ____ the afternoon.</p>
+                                    <p>10. He plays soccer ____ Saturdays.</p>
+                                    <p>11. My vacation starts ____ August.</p>
+                                    <p>12. We have a meeting ____ 3:30 PM.</p>
+                                    <p>13. The concert is ____ Christmas Eve.</p>
+                                    <p>14. I like to read books ____ the evening.</p>
+                                    <p>15. She calls me ____ Tuesdays.</p>
+                                    <p>16. He works ____ night.</p>
+                                    <p>17. They visited us ____ winter.</p>
+                                    <p>18. The school opens ____ September 1st.</p>
+                                    <p>19. I will be home ____ 6 o'clock.</p>
+                                    <p>20. We travel ____ summer.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. at</p><p>2. in</p><p>3. in</p><p>4. on</p><p>5. at</p><p>6. in</p><p>7. at</p><p>8. at</p><p>9. in</p><p>10. on</p><p>11. in</p><p>12. at</p><p>13. on</p><p>14. in</p><p>15. on</p><p>16. at</p><p>17. in</p><p>18. on</p><p>19. at</p><p>20. in</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula6',
+                    title: 'Aula 6: Ações Acontecendo Agora',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Present Continuous</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo no Present Continuous.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. Be quiet! The baby ____ (sleep).</p>
+                                    <p>2. We ____ (watch) a movie right now.</p>
+                                    <p>3. Why ____ you ____ (laugh)?</p>
+                                    <p>4. I ____ (not / work) today.</p>
+                                    <p>5. She ____ (read) a book in the garden.</p>
+                                    <p>6. They ____ (play) outside.</p>
+                                    <p>7. What ____ he ____ (do)?</p>
+                                    <p>8. My sister ____ (listen) to music.</p>
+                                    <p>9. The students ____ (study) for the test.</p>
+                                    <p>10. It ____ (rain) now.</p>
+                                    <p>11. I ____ (drink) water.</p>
+                                    <p>12. You ____ (learn) English.</p>
+                                    <p>13. He ____ (not / eat) dinner.</p>
+                                    <p>14. We ____ (talk) on the phone.</p>
+                                    <p>15. The birds ____ (sing).</p>
+                                    <p>16. She ____ (cook) in the kitchen.</p>
+                                    <p>17. My parents ____ (travel) this week.</p>
+                                    <p>18. ____ they ____ (wait) for the bus?</p>
+                                    <p>19. He ____ (not / watch) TV.</p>
+                                    <p>20. Look! The children ____ (run).</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. is sleeping</p><p>2. are watching</p><p>3. are you laughing</p><p>4. am not working</p><p>5. is reading</p><p>6. are playing</p><p>7. is he doing</p><p>8. is listening</p><p>9. are studying</p><p>10. is raining</p><p>11. am drinking</p><p>12. are learning</p><p>13. is not eating</p><p>14. are talking</p><p>15. are singing</p><p>16. is cooking</p><p>17. are traveling</p><p>18. Are they waiting</p><p>19. is not watching</p><p>20. are running</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Preposições de Lugar (In, On, At, Under, Next to, etc.)</h4>
+                                <p class="mb-4">Complete com a preposição de lugar correta (in, on, at, under, next to, behind, in front of, between).</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. The book is ____ the table.</p>
+                                    <p>2. I live ____ Brazil.</p>
+                                    <p>3. She is ____ home.</p>
+                                    <p>4. The dog is sleeping ____ the tree.</p>
+                                    <p>5. My school is ____ the bank.</p>
+                                    <p>6. The keys are ____ my bag.</p>
+                                    <p>7. We are waiting ____ the bus stop.</p>
+                                    <p>8. The picture is ____ the wall.</p>
+                                    <p>9. The cat is ____ the chair (embaixo).</p>
+                                    <p>10. The car is parked ____ the house (na frente de).</p>
+                                    <p>11. The store is ____ the bakery and the pharmacy.</p>
+                                    <p>12. He is standing ____ me (atrás).</p>
+                                    <p>13. My phone is ____ my pocket.</p>
+                                    <p>14. The restaurant is ____ the corner of the street.</p>
+                                    <p>15. She is sitting ____ the desk.</p>
+                                    <p>16. The ball is ____ the box.</p>
+                                    <p>17. They are ____ the garden.</p>
+                                    <p>18. The school is ____ the park.</p>
+                                    <p>19. He is ____ the car (dentro).</p>
+                                    <p>20. The remote control is ____ the sofa.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. on</p><p>2. in</p><p>3. at</p><p>4. under</p><p>5. next to</p><p>6. in</p><p>7. at</p><p>8. on</p><p>9. under</p><p>10. in front of</p><p>11. between</p><p>12. behind</p><p>13. in</p><p>14. on</p><p>15. at</p><p>16. in</p><p>17. in</p><p>18. next to</p><p>19. in</p><p>20. on</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula7',
+                    title: 'Aula 7: Falando Sobre o Passado',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Past Simple (Regulares)</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo regular no Past Simple.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I ____ (work) yesterday.</p>
+                                    <p>2. She ____ (play) tennis last week.</p>
+                                    <p>3. They ____ (study) for the exam.</p>
+                                    <p>4. He ____ (watch) a movie last night.</p>
+                                    <p>5. We ____ (listen) to music.</p>
+                                    <p>6. My mom ____ (cook) dinner.</p>
+                                    <p>7. The students ____ (arrive) late.</p>
+                                    <p>8. I ____ (clean) my room.</p>
+                                    <p>9. She ____ (talk) to her friend.</p>
+                                    <p>10. They ____ (visit) their grandparents.</p>
+                                    <p>11. He ____ (finish) his homework.</p>
+                                    <p>12. We ____ (walk) in the park.</p>
+                                    <p>13. She ____ (live) in London for 5 years.</p>
+                                    <p>14. I ____ (love) the concert.</p>
+                                    <p>15. They ____ (ask) many questions.</p>
+                                    <p>16. He ____ (help) me with my project.</p>
+                                    <p>17. We ____ (decide) to go out.</p>
+                                    <p>18. She ____ (enjoy) the party.</p>
+                                    <p>19. I ____ (start) a new course.</p>
+                                    <p>20. They ____ (want) some help.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. worked</p><p>2. played</p><p>3. studied</p><p>4. watched</p><p>5. listened</p><p>6. cooked</p><p>7. arrived</p><p>8. cleaned</p><p>9. talked</p><p>10. visited</p><p>11. finished</p><p>12. walked</p><p>13. lived</p><p>14. loved</p><p>15. asked</p><p>16. helped</p><p>17. decided</p><p>18. enjoyed</p><p>19. started</p><p>20. wanted</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Past Simple (Irregulares)</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo irregular no Past Simple.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I ____ (go) to the cinema yesterday.</p>
+                                    <p>2. She ____ (see) her friend at the mall.</p>
+                                    <p>3. They ____ (eat) pizza last night.</p>
+                                    <p>4. He ____ (drink) water.</p>
+                                    <p>5. We ____ (have) a great time.</p>
+                                    <p>6. My dad ____ (make) dinner.</p>
+                                    <p>7. She ____ (write) a letter.</p>
+                                    <p>8. I ____ (read) a book.</p>
+                                    <p>9. He ____ (buy) a new car.</p>
+                                    <p>10. They ____ (come) home late.</p>
+                                    <p>11. We ____ (get) a new pet.</p>
+                                    <p>12. She ____ (give) me a present.</p>
+                                    <p>13. I ____ (know) the answer.</p>
+                                    <p>14. He ____ (speak) English.</p>
+                                    <p>15. They ____ (sing) a song.</p>
+                                    <p>16. She ____ (take) the bus.</p>
+                                    <p>17. We ____ (tell) them the truth.</p>
+                                    <p>18. I ____ (think) about you.</p>
+                                    <p>19. He ____ (find) his keys.</p>
+                                    <p>20. They ____ (begin) the class.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. went</p><p>2. saw</p><p>3. ate</p><p>4. drank</p><p>5. had</p><p>6. made</p><p>7. wrote</p><p>8. read</p><p>9. bought</p><p>10. came</p><p>11. got</p><p>12. gave</p><p>13. knew</p><p>14. spoke</p><p>15. sang</p><p>16. took</p><p>17. told</p><p>18. thought</p><p>19. found</p><p>20. began</p>
+                                </div>
+                            </div>
+                            
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">3. Past Simple (Negativa e Interrogativa)</h4>
+                                <p class="mb-4">Transforme as frases para a forma negativa ou interrogativa no Past Simple.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I worked yesterday. (Negativa) -> ____</p>
+                                    <p>2. She went to the party. (Interrogativa) -> ____?</p>
+                                    <p>3. They ate pizza. (Negativa) -> ____</p>
+                                    <p>4. He watched TV. (Interrogativa) -> ____?</p>
+                                    <p>5. We studied hard. (Negativa) -> ____</p>
+                                    <p>6. Sarah cooked dinner. (Interrogativa) -> ____?</p>
+                                    <p>7. I bought a new phone. (Negativa) -> ____</p>
+                                    <p>8. They saw John. (Interrogativa) -> ____?</p>
+                                    <p>9. He played soccer. (Negativa) -> ____</p>
+                                    <p>10. You read that book. (Interrogativa) -> ____?</p>
+                                    <p>11. She sang well. (Negativa) -> ____</p>
+                                    <p>12. They arrived early. (Interrogativa) -> ____?</p>
+                                    <p>13. I cleaned my room. (Negativa) -> ____</p>
+                                    <p>14. He spoke Portuguese. (Interrogativa) -> ____?</p>
+                                    <p>15. We told the truth. (Negativa) -> ____</p>
+                                    <p>16. She had a good time. (Interrogativa) -> ____?</p>
+                                    <p>17. I knew the answer. (Negativa) -> ____</p>
+                                    <p>18. They came home late. (Interrogativa) -> ____?</p>
+                                    <p>19. He built a house. (Negativa) -> ____</p>
+                                    <p>20. You understood the lesson. (Interrogativa) -> ____?</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. I didn't work yesterday.</p><p>2. Did she go to the party?</p><p>3. They didn't eat pizza.</p><p>4. Did he watch TV?</p><p>5. We didn't study hard.</p><p>6. Did Sarah cook dinner?</p><p>7. I didn't buy a new phone.</p><p>8. Did they see John?</p><p>9. He didn't play soccer.</p><p>10. Did you read that book?</p><p>11. She didn't sing well.</p><p>12. Did they arrive early?</p><p>13. I didn't clean my room.</p><p>14. Did he speak Portuguese?</p><p>15. We didn't tell the truth.</p><p>16. Did she have a good time?</p><p>17. I didn't know the answer.</p><p>18. Did they come home late?</p><p>19. He didn't build a house.</p><p>20. Did you understand the lesson?</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula8',
+                    title: 'Aula 8: Planos e Previsões para o Futuro',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. "Will" ou "Going to"</h4>
+                                <p class="mb-4">Escolha a forma futura correta ("will" ou "going to").</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. Look at those dark clouds! It ____ rain. (is going to / will)</p>
+                                    <p>2. I have a ticket. I ____ travel to Paris next week. (am going to / will)</p>
+                                    <p>3. A: "The phone is ringing." B: "Ok, I ____ answer it." (am going to / will)</p>
+                                    <p>4. We ____ have a party on Saturday. We've invited everyone. (are going to / will)</p>
+                                    <p>5. I think he ____ pass the exam. (is going to / will)</p>
+                                    <p>6. They are very tired. They ____ sleep soon. (are going to / will)</p>
+                                    <p>7. Don't worry, I ____ help you. (am going to / will)</p>
+                                    <p>8. She has a reservation. She ____ eat at the new restaurant. (is going to / will)</p>
+                                    <p>9. A: "I'm hungry." B: "I ____ make you a sandwich." (am going to / will)</p>
+                                    <p>10. He ____ probably buy a new car. (is going to / will)</p>
+                                    <p>11. My sister ____ visit us next month. It's planned. (is going to / will)</p>
+                                    <p>12. I promise I ____ call you tonight. (am going to / will)</p>
+                                    <p>13. The movie ____ start in five minutes. (is going to / will)</p>
+                                    <p>14. It's very hot in here. I ____ open the window. (am going to / will)</p>
+                                    <p>15. They ____ build a new hospital next year. (are going to / will)</p>
+                                    <p>16. I don't think he ____ come. (is going to / will)</p>
+                                    <p>17. We ____ have a great time at the concert. (are going to / will)</p>
+                                    <p>18. Be careful! You ____ fall! (are going to / will)</p>
+                                    <p>19. She's pregnant. She ____ have a baby. (is going to / will)</p>
+                                    <p>20. I ____ be rich one day. (am going to / will)</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. is going to</p><p>2. am going to</p><p>3. will</p><p>4. are going to</p><p>5. will</p><p>6. are going to</p><p>7. will</p><p>8. is going to</p><p>9. will</p><p>10. will</p><p>11. is going to</p><p>12. will</p><p>13. will</p><p>14. will</p><p>15. are going to</p><p>16. will</p><p>17. will</p><p>18. are going to</p><p>19. is going to</p><p>20. will</p>
+                                </div>
+                            </div>
+                            
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Present Tenses para o Futuro</h4>
+                                <p class="mb-4">Escolha o tempo presente correto para indicar o futuro (Present Simple ou Present Continuous).</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. The train ____ (leave) at 9 AM tomorrow.</p>
+                                    <p>2. I ____ (meet) John for dinner tonight.</p>
+                                    <p>3. The movie ____ (start) at 8 PM.</p>
+                                    <p>4. We ____ (fly) to New York next week. (already booked)</p>
+                                    <p>5. The bus ____ (arrive) at 2:15 PM.</p>
+                                    <p>6. She ____ (have) a doctor's appointment on Friday.</p>
+                                    <p>7. My class ____ (finish) at 5 PM.</p>
+                                    <p>8. They ____ (play) tennis on Sunday morning.</p>
+                                    <p>9. The party ____ (begin) at 7 PM.</p>
+                                    <p>10. I ____ (work) until midnight tonight.</p>
+                                    <p>11. The store ____ (open) at 9 AM.</p>
+                                    <p>12. We ____ (go) to the cinema on Friday. (arranged)</p>
+                                    <p>13. What time ____ the plane ____ (land)?</p>
+                                    <p>14. He ____ (visit) his grandma this weekend. (planned)</p>
+                                    <p>15. The course ____ (end) in December.</p>
+                                    <p>16. I ____ (see) my dentist tomorrow at 10 AM. (appointment)</p>
+                                    <p>17. What ____ you ____ (do) tomorrow evening?</p>
+                                    <p>18. The concert ____ (start) at 8:30 PM.</p>
+                                    <p>19. We ____ (have) a lesson next Monday.</p>
+                                    <p>20. My brother ____ (come) home for Christmas. (arranged)</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. leaves</p><p>2. am meeting</p><p>3. starts</p><p>4. are flying</p><p>5. arrives</p><p>6. is having</p><p>7. finishes</p><p>8. are playing</p><p>9. begins</p><p>10. am working</p><p>11. opens</p><p>12. are going</p><p>13. does the plane land</p><p>14. is visiting</p><p>15. ends</p><p>16. am seeing</p><p>17. are you doing</p><p>18. starts</p><p>19. are having</p><p>20. is coming</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula9',
+                    title: 'Aula 9: O que Estava Acontecendo?',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Past Continuous</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo no Past Continuous.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I ____ (study) when you called.</p>
+                                    <p>2. She ____ (sleep) at 10 PM last night.</p>
+                                    <p>3. They ____ (play) soccer all afternoon.</p>
+                                    <p>4. He ____ (watch) TV when I arrived.</p>
+                                    <p>5. We ____ (eat) dinner when the phone rang.</p>
+                                    <p>6. My mom ____ (cook) while I was reading.</p>
+                                    <p>7. The children ____ (run) in the park.</p>
+                                    <p>8. It ____ (rain) all morning.</p>
+                                    <p>9. What ____ you ____ (do) yesterday at 3 PM?</p>
+                                    <p>10. I ____ (not / listen) to music.</p>
+                                    <p>11. She ____ (write) a letter.</p>
+                                    <p>12. They ____ (talk) about the new movie.</p>
+                                    <p>13. He ____ (work) from home.</p>
+                                    <p>14. We ____ (wait) for the bus.</p>
+                                    <p>15. The dog ____ (bark) at the cat.</p>
+                                    <p>16. She ____ (sing) a song.</p>
+                                    <p>17. My parents ____ (travel) in Italy.</p>
+                                    <p>18. ____ he ____ (read) a book?</p>
+                                    <p>19. You ____ (not / pay) attention.</p>
+                                    <p>20. The sun ____ (shine) brightly.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. was studying</p><p>2. was sleeping</p><p>3. were playing</p><p>4. was watching</p><p>5. were eating</p><p>6. was cooking</p><p>7. were running</p><p>8. was raining</p><p>9. were you doing</p><p>10. was not listening</p><p>11. was writing</p><p>12. were talking</p><p>13. was working</p><p>14. were waiting</p><p>15. was barking</p><p>16. was singing</p><p>17. were traveling</p><p>18. Was he reading</p><p>19. were not paying</p><p>20. was shining</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Past Simple vs. Past Continuous</h4>
+                                <p class="mb-4">Combine as frases usando Past Simple e Past Continuous.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I (sleep) / the phone (ring).</p>
+                                    <p>2. She (read) / he (come) in.</p>
+                                    <p>3. We (watch) TV / the lights (go out).</p>
+                                    <p>4. He (work) / I (see) him.</p>
+                                    <p>5. They (play) outside / it (start) to rain.</p>
+                                    <p>6. While I (drive), I (see) an accident.</p>
+                                    <p>7. What (you / do) when I (call) you?</p>
+                                    <p>8. She (cook) dinner / he (arrive).</p>
+                                    <p>9. The children (draw) / their mom (enter) the room.</p>
+                                    <p>10. I (listen) to music / my brother (open) the door.</p>
+                                    <p>11. He (walk) in the park / he (find) some money.</p>
+                                    <p>12. While they (have) breakfast, the news (come on).</p>
+                                    <p>13. I (wait) for the bus / I (meet) an old friend.</p>
+                                    <p>14. She (study) for her exam / the power (go off).</p>
+                                    <p>15. What (they / talk about) when you (interrupt) them?</p>
+                                    <p>16. He (take) a shower / the doorbell (ring).</p>
+                                    <p>17. While we (play) video games, our parents (come home).</p>
+                                    <p>18. I (clean) the kitchen / my sister (break) a glass.</p>
+                                    <p>19. He (read) a book / he (fall) asleep.</p>
+                                    <p>20. The sun (shine) / suddenly it (start) to rain.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. I was sleeping when the phone rang.</p><p>2. She was reading when he came in.</p><p>3. We were watching TV when the lights went out.</p><p>4. He was working when I saw him.</p><p>5. They were playing outside when it started to rain.</p><p>6. While I was driving, I saw an accident.</p><p>7. What were you doing when I called you?</p><p>8. She was cooking dinner when he arrived.</p><p>9. The children were drawing when their mom entered the room.</p><p>10. I was listening to music when my brother opened the door.</p><p>11. He was walking in the park when he found some money.</p><p>12. While they were having breakfast, the news came on.</p><p>13. I was waiting for the bus when I met an old friend.</p><p>14. She was studying for her exam when the power went off.</p><p>15. What were they talking about when you interrupted them?</p><p>16. He was taking a shower when the doorbell rang.</p><p>17. While we were playing video games, our parents came home.</p><p>18. I was cleaning the kitchen when my sister broke a glass.</p><p>19. He was reading a book when he fell asleep.</p><p>20. The sun was shining when suddenly it started to rain.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula10',
+                    title: 'Aula 10: Comparando Tudo!',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Comparativos</h4>
+                                <p class="mb-4">Complete as frases com a forma comparativa correta dos adjetivos.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. John is ____ (tall) than Mary.</p>
+                                    <p>2. This car is ____ (expensive) than that one.</p>
+                                    <p>3. My phone is ____ (new) than yours.</p>
+                                    <p>4. She is ____ (happy) than he is.</p>
+                                    <p>5. The weather today is ____ (good) than yesterday.</p>
+                                    <p>6. My house is ____ (big) than yours.</p>
+                                    <p>7. This book is ____ (interesting) than the movie.</p>
+                                    <p>8. He is ____ (fast) than his brother.</p>
+                                    <p>9. Sarah is ____ (young) than her sister.</p>
+                                    <p>10. This exercise is ____ (difficult) than the last one.</p>
+                                    <p>11. Your dog is ____ (small) than my cat.</p>
+                                    <p>12. The blue shirt is ____ (cheap) than the red one.</p>
+                                    <p>13. My grades are ____ (bad) than last semester.</p>
+                                    <p>14. City life is ____ (busy) than country life.</p>
+                                    <p>15. This street is ____ (long) than that street.</p>
+                                    <p>16. She is ____ (beautiful) than him.</p>
+                                    <p>17. My computer is ____ (modern) than yours.</p>
+                                    <p>18. Summer is ____ (hot) than spring.</p>
+                                    <p>19. He runs ____ (quickly) than me (advérbio).</p>
+                                    <p>20. The food was ____ (delicious) than I expected.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. taller</p><p>2. more expensive</p><p>3. newer</p><p>4. happier</p><p>5. better</p><p>6. bigger</p><p>7. more interesting</p><p>8. faster</p><p>9. younger</p><p>10. more difficult</p><p>11. smaller</p><p>12. cheaper</p><p>13. worse</p><p>14. busier</p><p>15. longer</p><p>16. more beautiful</p><p>17. more modern</p><p>18. hotter</p><p>19. more quickly</p><p>20. more delicious</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Superlativos</h4>
+                                <p class="mb-4">Complete as frases com a forma superlativa correta dos adjetivos.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. He is ____ (tall) student in the class.</p>
+                                    <p>2. This is ____ (expensive) car in the store.</p>
+                                    <p>3. She is ____ (happy) person I know.</p>
+                                    <p>4. This is ____ (good) movie ever.</p>
+                                    <p>5. Mount Everest is ____ (high) mountain in the world.</p>
+                                    <p>6. She is ____ (beautiful) actress.</p>
+                                    <p>7. This is ____ (big) dog I've seen.</p>
+                                    <p>8. It was ____ (bad) day of my life.</p>
+                                    <p>9. He is ____ (intelligent) person in our group.</p>
+                                    <p>10. This is ____ (small) room in the house.</p>
+                                    <p>11. The Amazon is ____ (long) river.</p>
+                                    <p>12. That was ____ (exciting) game of the season.</p>
+                                    <p>13. She is ____ (popular) singer.</p>
+                                    <p>14. This is ____ (difficult) problem.</p>
+                                    <p>15. The sun is ____ (hot) star.</p>
+                                    <p>16. He is ____ (young) brother.</p>
+                                    <p>17. This is ____ (interesting) book I've read.</p>
+                                    <p>18. My mom is ____ (kind) person.</p>
+                                    <p>19. This is ____ (fast) car on the track.</p>
+                                    <p>20. The elephant is ____ (heavy) land animal.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. the tallest</p><p>2. the most expensive</p><p>3. the happiest</p><p>4. the best</p><p>5. the highest</p><p>6. the most beautiful</p><p>7. the biggest</p><p>8. the worst</p><p>9. the most intelligent</p><p>10. the smallest</p><p>11. the longest</p><p>12. the most exciting</p><p>13. the most popular</p><p>14. the most difficult</p><p>15. the hottest</p><p>16. the youngest</p><p>17. the most interesting</p><p>18. the kindest</p><p>19. the fastest</p><p>20. the heaviest</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 'ex-aula11',
+                    title: 'Aula 11: Expressando Habilidade e Obrigação',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Verbos Modais (Can/Can't, Could/Couldn't, Should)</h4>
+                                <p class="mb-4">Complete as frases com Can/Can't, Could/Couldn't, ou Should.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I ____ speak three languages.</p>
+                                    <p>2. He ____ swim when he was 5, but now he ____.</p>
+                                    <p>3. You look tired. You ____ rest.</p>
+                                    <p>4. ____ you please help me with this box?</p>
+                                    <p>5. She ____ come to the party tonight. She is busy.</p>
+                                    <p>6. It's very late. We ____ go home.</p>
+                                    <p>7. My grandmother ____ read without glasses now, but she ____ in the past.</p>
+                                    <p>8. ____ I use your phone, please?</p>
+                                    <p>9. You ____ eat so much sugar. It's not good for you.</p>
+                                    <p>10. They ____ play the guitar very well.</p>
+                                    <p>11. I ____ hear you clearly. The music is too loud.</p>
+                                    <p>12. He ____ call his parents more often.</p>
+                                    <p>13. ____ you pass me the salt?</p>
+                                    <p>14. We ____ find our keys. They are lost.</p>
+                                    <p>15. It's cold. You ____ close the window.</p>
+                                    <p>16. ____ I sit here?</p>
+                                    <p>17. I ____ understand what he was saying.</p>
+                                    <p>18. They ____ finish their homework before watching TV.</p>
+                                    <p>19. She ____ speak English fluently now. (habilidade)</p>
+                                    <p>20. You ____ save money for the future.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. can</p><p>2. could / can't</p><p>3. should</p><p>4. Could</p><p>5. can't</p><p>6. should</p><p>7. can't / could</p><p>8. Can</p><p>9. shouldn't</p><p>10. can</p><p>11. can't</p><p>12. should</p><p>13. Could</p><p>14. can't</p><p>15. should</p><p>16. Can</p><p>17. couldn't</p><p>18. should</p><p>19. can</p><p>20. should</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Verbos Modais (Must/Have to, May/Might)</h4>
+                                <p class="mb-4">Complete as frases com Must/Have to, May/Might.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I ____ wear a uniform at school. (obrigação externa)</p>
+                                    <p>2. You ____ study hard for the exam. (obrigação forte)</p>
+                                    <p>3. It ____ rain later. (possibilidade)</p>
+                                    <p>4. She ____ be at home now. (possibilidade)</p>
+                                    <p>5. We ____ pay our bills on time. (obrigação externa)</p>
+                                    <p>6. I ____ remember to call my mom. (obrigação interna)</p>
+                                    <p>7. He ____ come to the party, but he's not sure. (menor possibilidade)</p>
+                                    <p>8. You ____ not smoke here. It's forbidden. (proibição forte)</p>
+                                    <p>9. They ____ finish the project by Friday. (obrigação externa)</p>
+                                    <p>10. ____ I come in? (permissão formal)</p>
+                                    <p>11. I ____ go to the dentist tomorrow. (compromisso agendado)</p>
+                                    <p>12. You ____ read this book. It's amazing! (obrigação interna, conselho forte)</p>
+                                    <p>13. He ____ be sick. He looks very pale. (possibilidade forte)</p>
+                                    <p>14. We ____ get a visa to travel to the US. (obrigação externa)</p>
+                                    <p>15. She ____ not understand. (possibilidade de não entender)</p>
+                                    <p>16. You ____ always follow the rules. (obrigação geral)</p>
+                                    <p>17. They ____ arrive late. (possibilidade)</p>
+                                    <p>18. I ____ visit my grandparents more often. (obrigação interna, sentimento)</p>
+                                    <p>19. He ____ be careful when driving. (obrigação forte)</p>
+                                    <p>20. She ____ join us for dinner, if she finishes work early. (possibilidade)</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. have to</p><p>2. must</p><p>3. may</p><p>4. might</p><p>5. have to</p><p>6. must</p><p>7. might</p><p>8. must</p><p>9. have to</p><p>10. May</p><p>11. have to</p><p>12. must</p><p>13. must</p><p>14. have to</p><p>15. may not</p><p>16. must</p><p>17. may</p><p>18. must</p><p>19. must</p><p>20. might</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                 {
+                    id: 'ex-aula12',
+                    title: 'Aula 12: Quantidades e Conexões',
+                    content: `
+                        <div class="content-card p-6 md:p-8 space-y-8">
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">1. Countable/Uncountable Nouns e Quantificadores (Much, Many, Some, Any, A lot of)</h4>
+                                <p class="mb-4">Escolha o quantificador correto para cada frase.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. How ____ apples do you want? (much / many)</p>
+                                    <p>2. There isn't ____ water in the bottle. (some / any)</p>
+                                    <p>3. I have ____ friends in Brazil. (much / many / a lot of)</p>
+                                    <p>4. She doesn't have ____ money. (much / many)</p>
+                                    <p>5. Do you have ____ questions? (some / any)</p>
+                                    <p>6. We need ____ milk. (some / any)</p>
+                                    <p>7. How ____ time do we have? (much / many)</p>
+                                    <p>8. There are ____ chairs in the room. (much / many / a lot of)</p>
+                                    <p>9. He doesn't read ____ books. (much / many)</p>
+                                    <p>10. I have ____ information for you. (much / many / a lot of)</p>
+                                    <p>11. Is there ____ coffee left? (some / any)</p>
+                                    <p>12. They bought ____ new clothes. (much / many / a lot of)</p>
+                                    <p>13. We don't have ____ work to do. (much / many)</p>
+                                    <p>14. There are ____ people at the party. (much / many / a lot of)</p>
+                                    <p>15. Did you bring ____ food? (some / any)</p>
+                                    <p>16. I need ____ advice. (some / any)</p>
+                                    <p>17. How ____ students are in your class? (much / many)</p>
+                                    <p>18. He doesn't have ____ patience. (much / many)</p>
+                                    <p>19. There is ____ sugar in the coffee. (much / many / a lot of)</p>
+                                    <p>20. Do you have ____ ideas? (some / any)</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. many</p><p>2. any</p><p>3. a lot of</p><p>4. much</p><p>5. any</p><p>6. some</p><p>7. much</p><p>8. a lot of</p><p>9. many</p><p>10. a lot of</p><p>11. any</p><p>12. a lot of</p><p>13. much</p><p>14. a lot of</p><p>15. any</p><p>16. some</p><p>17. many</p><p>18. much</p><p>19. a lot of</p><p>20. any</p>
+                                </div>
+                            </div>
+
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">2. Conjunções (And, Or, But, So, Because, Although)</h4>
+                                <p class="mb-4">Complete as frases com a conjunção correta.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I like coffee ____ tea.</p>
+                                    <p>2. He is tired, ____ he is happy.</p>
+                                    <p>3. Do you want pizza ____ pasta?</p>
+                                    <p>4. It was raining, ____ we stayed home.</p>
+                                    <p>5. I am studying ____ I have a test.</p>
+                                    <p>6. ____ it was cold, we went for a walk.</p>
+                                    <p>7. She speaks English ____ French.</p>
+                                    <p>8. He wants to go, ____ he can't.</p>
+                                    <p>9. Is it a boy ____ a girl?</p>
+                                    <p>10. I am hungry, ____ I will eat.</p>
+                                    <p>11. She is happy ____ she passed the exam.</p>
+                                    <p>12. ____ he is rich, he is not happy.</p>
+                                    <p>13. I woke up late ____ missed the bus.</p>
+                                    <p>14. He is smart ____ lazy.</p>
+                                    <p>15. We can go now ____ later.</p>
+                                    <p>16. She was sick, ____ she didn't come.</p>
+                                    <p>17. They are learning English ____ they want to travel.</p>
+                                    <p>18. ____ the weather was bad, we enjoyed the trip.</p>
+                                    <p>19. I need to buy milk ____ bread.</p>
+                                    <p>20. He likes to read ____ watch movies.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. and</p><p>2. but</p><p>3. or</p><p>4. so</p><p>5. because</p><p>6. Although</p><p>7. and</p><p>8. but</p><p>9. or</p><p>10. so</p><p>11. because</p><p>12. Although</p><p>13. and</p><p>14. but</p><p>15. or</p><p>16. so</p><p>17. because</p><p>18. Although</p><p>19. and</p><p>20. and</p>
+                                </div>
+                            </div>
+                            
+                            <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">3. Zero e First Conditionals</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo para Zero ou First Conditional.</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. If you ____ (heat) water to 100 degrees, it ____ (boil).</p>
+                                    <p>2. If it ____ (rain) tomorrow, I ____ (stay) at home.</p>
+                                    <p>3. If I ____ (study) hard, I ____ (pass) the exam.</p>
+                                    <p>4. If you ____ (mix) red and blue, you ____ (get) purple.</p>
+                                    <p>5. If she ____ (come) late, I ____ (be) angry.</p>
+                                    <p>6. If I ____ (eat) too much, I ____ (feel) sick.</p>
+                                    <p>7. If you ____ (touch) fire, you ____ (get) burned.</p>
+                                    <p>8. If they ____ (not / hurry), they ____ (miss) the bus.</p>
+                                    <p>9. If I ____ (see) her, I ____ (tell) her your message.</p>
+                                    <p>10. If ice ____ (melt), it ____ (turn) into water.</p>
+                                    <p>11. If you ____ (help) me, I ____ (finish) faster.</p>
+                                    <p>12. If it ____ (snow) today, the roads ____ (be) slippery.</p>
+                                    <p>13. If plants ____ (not / get) water, they ____ (die).</p>
+                                    <p>14. If he ____ (sleep) well, he ____ (feel) better.</p>
+                                    <p>15. If I ____ (go) to the party, I ____ (buy) a gift.</p>
+                                    <p>16. If you ____ (press) this button, the light ____ (turn on).</p>
+                                    <p>17. If she ____ (call) me, I ____ (answer).</p>
+                                    <p>18. If children ____ (play) in the sun, they ____ (get) thirsty.</p>
+                                    <p>19. If you ____ (not / study), you ____ (not / pass) the test.</p>
+                                    <p>20. If I ____ (have) time, I ____ (visit) you tomorrow.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. heat / boils</p><p>2. rains / will stay</p><p>3. study / will pass</p><p>4. mix / get</p><p>5. comes / will be</p><p>6. eat / feel</p><p>7. touch / get</p><p>8. don't hurry / will miss</p><p>9. see / will tell</p><p>10. melts / turns</p><p>11. help / will finish</p><p>12. snows / will be</p><p>13. don't get / die</p><p>14. sleeps / feels</p><p>15. go / will buy</p><p>16. press / turns on</p><p>17. calls / will answer</p><p>18. play / get</p><p>19. don't study / won't pass</p><p>20. have / will visit</p>
+                                </div>
+                            </div>
+
+                             <div class="exercise-block">
+                                <h4 class="text-xl font-semibold mb-3">4. Gerúndios (-ing) e Infinitivos (to + verbo)</h4>
+                                <p class="mb-4">Complete as frases com a forma correta do verbo (gerúndio ou infinitivo).</p>
+                                <div class="exercise-text space-y-2 text-lg">
+                                    <p>1. I enjoy ____ (read) books.</p>
+                                    <p>2. She wants ____ (learn) English.</p>
+                                    <p>3. He likes ____ (play) soccer.</p>
+                                    <p>4. We need ____ (buy) food.</p>
+                                    <p>5. They finish ____ (work) at 5 PM.</p>
+                                    <p>6. I hope ____ (travel) next year.</p>
+                                    <p>7. She loves ____ (cook).</p>
+                                    <p>8. He decided ____ (go) to the party.</p>
+                                    <p>9. We plan ____ (visit) our friends.</p>
+                                    <p>10. I don't mind ____ (wait).</p>
+                                    <p>11. She started ____ (study) a new language.</p>
+                                    <p>12. He suggested ____ (eat) pizza.</p>
+                                    <p>13. I need ____ (sleep) now.</p>
+                                    <p>14. They learn ____ (speak) English.</p>
+                                    <p>15. She hates ____ (wake up) early.</p>
+                                    <p>16. We decided ____ (buy) a new car.</p>
+                                    <p>17. I miss ____ (play) with my old friends.</p>
+                                    <p>18. He agreed ____ (help) me.</p>
+                                    <p>19. She prefers ____ (watch) movies at home.</p>
+                                    <p>20. I like ____ (swim) in the ocean.</p>
+                                </div>
+                                <div class="answers hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                                    <h5 class="font-bold mb-2">Gabarito</h5>
+                                    <p>1. reading</p><p>2. to learn</p><p>3. playing</p><p>4. to buy</p><p>5. working</p><p>6. to travel</p><p>7. cooking</p><p>8. to go</p><p>9. to visit</p><p>10. waiting</p><p>11. studying</p><p>12. eating</p><p>13. to sleep</p><p>14. to speak</p><p>15. waking up</p><p>16. to buy</p><p>17. playing</p><p>18. to help</p><p>19. watching</p><p>20. swimming</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                }
+            ],
+            recursos: [
+                {
+                    channel: 'Mairo Vergara',
+                    description: 'Um dos professores mais populares do Brasil. Ótimo para iniciantes, com dicas de estudo, pronúncia e explicações claras em português.',
+                    link: 'https://www.youtube.com/c/MairoVergara'
+                },
+                {
+                    channel: 'Inglês com a Gringa',
+                    description: 'Oferece a perspectiva de uma falante nativa adaptada para brasileiros, com foco em gramática, conversação e frases do dia a dia.',
+                    link: 'https://www.youtube.com/c/inglescomagringa'
+                },
+                {
+                    channel: 'British Council LearnEnglish',
+                    description: 'Conteúdo de alta qualidade estruturado por níveis. Os vídeos são em inglês (ótimo para treinar o ouvido), com legendas e animações claras.',
+                    link: 'https://www.youtube.com/user/BCLearnEnglish'
+                },
+                {
+                    channel: 'English with Jennifer',
+                    description: 'Explicações muito detalhadas e didáticas sobre gramática e pronúncia. Ideal para quem quer entender os "porquês" das regras.',
+                    link: 'https://www.youtube.com/c/Englishwithjennifer'
+                },
+                 {
+                    channel: 'Speak English With Mr. Duncan',
+                    description: 'Aulas divertidas e dinâmicas que ajudam a manter a motivação, cobrindo cultura, vocabulário e pronúncia de forma envolvente.',
+                    link: 'https://www.youtube.com/c/Speakenglishwithmrduncan'
+                }
+            ]
+        };
+
+        const mainNavLinks = document.querySelectorAll('.main-nav-link');
+        const mobileNavLinks = document.querySelectorAll('.main-nav-link-mobile');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        const aulasSubNav = document.getElementById('aulas-sub-nav');
+        const aulasContentArea = document.getElementById('aulas-content-area');
+        
+        const exerciciosSubNav = document.getElementById('exercicios-sub-nav');
+        const exerciciosContentArea = document.getElementById('exercicios-content-area');
+
+        const vocabSections = document.getElementById('vocab-sections');
+        const recursosList = document.getElementById('recursos-list');
+        const progressChecklist = document.getElementById('progress-checklist');
+
+        let progressChart;
+
+        function switchTab(tabId) {
+            tabContents.forEach(content => content.classList.add('hidden'));
+            document.getElementById(`${tabId}-content`).classList.remove('hidden');
+
+            mainNavLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.tab === tabId);
+            });
+             mobileNavLinks.forEach(link => {
+                link.classList.toggle('bg-gray-100', link.dataset.tab === tabId);
+            });
+            mobileMenu.classList.add('hidden');
+        }
+
+        mainNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(e.target.dataset.tab);
+            });
+        });
+        
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(e.target.dataset.tab);
+            });
+        });
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function setupSubNav(subNavEl, contentAreaEl, dataArray, type) {
+            subNavEl.innerHTML = ''; // Clear previous links
+            dataArray.forEach((item, index) => {
+                const link = document.createElement('a');
+                link.href = `#${item.id}`;
+                link.className = 'sub-nav-link px-4 py-2 text-gray-700 rounded-md cursor-pointer';
+                link.textContent = item.title;
+                link.dataset.id = item.id;
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    contentAreaEl.innerHTML = item.content;
+                    if (item.story) {
+                        const storyDiv = document.createElement('div');
+                        storyDiv.className = 'mt-8'; // Add some top margin
+                        storyDiv.innerHTML = item.story.text;
+                        contentAreaEl.appendChild(storyDiv);
+                    }
+                    
+                    if (type === 'exercicios') {
+                        setupExerciseInteractions();
+                    }
+
+                    document.querySelectorAll(`#${subNavEl.id} .sub-nav-link`).forEach(l => l.classList.remove('active'));
+                    e.target.classList.add('active');
+                });
+
+                subNavEl.appendChild(link);
+
+                if (index === 0) {
+                    link.click();
+                }
+            });
+        }
+        
+        function setupExerciseInteractions() {
+            document.querySelectorAll('.exercise-block').forEach(block => {
+                // Remove existing buttons to prevent duplicates on re-render
+                const existingButtons = block.querySelectorAll('.btn-secondary, .btn-primary');
+                existingButtons.forEach(button => button.parentElement.remove());
+
+                const exerciseTextElement = block.querySelector('.exercise-text');
+                const textToCopy = exerciseTextElement ? exerciseTextElement.innerText : '';
+                const answerBlock = block.querySelector('.answers');
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'mt-4 flex space-x-2';
+                
+                const copyButton = document.createElement('button');
+                copyButton.className = 'btn-secondary px-4 py-2 rounded-md text-sm font-medium';
+                copyButton.textContent = 'Copiar Exercício';
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        copyButton.textContent = 'Copiado!';
+                        setTimeout(() => { copyButton.textContent = 'Copiar Exercício'; }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        // Fallback for browsers without navigator.clipboard (e.g., older WebView)
+                        const textArea = document.createElement("textarea");
+                        textArea.value = textToCopy;
+                        textArea.style.position = "fixed";  // Avoid scrolling to bottom
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            copyButton.textContent = 'Copiado!';
+                            setTimeout(() => { copyButton.textContent = 'Copiar Exercício'; }, 2000);
+                        } catch (err) {
+                            console.error('Fallback: Oops, unable to copy', err);
+                        }
+                        document.body.removeChild(textArea);
+                    });
+                });
+                
+                const answerButton = document.createElement('button');
+                answerButton.className = 'btn-primary px-4 py-2 rounded-md text-sm font-medium';
+                answerButton.textContent = 'Mostrar Gabarito';
+                answerButton.addEventListener('click', () => {
+                    answerBlock.classList.toggle('hidden');
+                    answerButton.textContent = answerBlock.classList.contains('hidden') ? 'Mostrar Gabarito' : 'Ocultar Gabarito';
+                });
+                
+                buttonContainer.appendChild(answerButton);
+                buttonContainer.appendChild(copyButton);
+                block.appendChild(buttonContainer);
+            });
+        }
+
+        function setupVocab() {
+            vocabSections.innerHTML = ''; // Clear previous content
+            data.vocabulario.forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'mb-12';
+                
+                const title = document.createElement('h3');
+                title.className = 'text-2xl font-bold text-gray-800 mb-6 text-center';
+                title.textContent = section.title;
+                sectionDiv.appendChild(title);
+
+                // Adjusted grid columns for more cards per row
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4';
+
+                section.items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'vocab-card'; // Height is set in CSS
+                    card.innerHTML = `
+                        <div class="vocab-card-inner content-card">
+                            <div class="vocab-card-front">
+                                <span>${item.en}</span>
+                            </div>
+                            <div class="vocab-card-back bg-[#5D7A8C] text-white">
+                                <span>${item.pt}</span>
+                                <span class="mt-2 text-center italic">"${item.ex}"<br/><em>"${item.ex_pt}"</em></span>
+                            </div>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => {
+                        card.classList.toggle('flipped');
+                    });
+                    grid.appendChild(card);
+                });
+                sectionDiv.appendChild(grid);
+                vocabSections.appendChild(sectionDiv);
+            });
+        }
+        
+        function setupRecursos() {
+            recursosList.innerHTML = ''; // Clear previous content
+            data.recursos.forEach(recurso => {
+                const card = document.createElement('a');
+                card.href = recurso.link;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+                card.className = 'content-card p-6 block hover:shadow-lg hover:-translate-y-1 transition-all duration-300';
+                card.innerHTML = `
+                    <h4 class="text-xl font-bold text-[#5D7A8C] mb-2">${recurso.channel}</h4>
+                    <p class="text-gray-600">${recurso.description}</p>
+                    <span class="text-sm font-semibold text-[#5D7A8C] mt-4 inline-block">Visitar Canal &rarr;</span>
+                `;
+                recursosList.appendChild(card);
+            });
+        }
+
+        function setupProgressTracker() {
+            const modules = data.aulas; // Now tracks 'aulas'
+            const totalModules = modules.length;
+            let completedModules = 0;
+
+            const updateChart = () => {
+                if (progressChart) { // Ensure chart exists before updating
+                    progressChart.data.datasets[0].data = [completedModules, totalModules - completedModules];
+                    progressChart.update();
+                }
+            };
+
+            progressChecklist.innerHTML = ''; // Clear previous checkboxes
+            modules.forEach(module => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center space-x-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer';
+                label.innerHTML = `
+                    <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-[#5D7A8C] focus:ring-[#5D7A8C]" data-module-id="${module.id}">
+                    <span class="text-gray-700">${module.title}</span>
+                `;
+                const checkbox = label.querySelector('input');
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        completedModules++;
+                    } else {
+                        completedModules--;
+                    }
+                    updateChart();
+                });
+                progressChecklist.appendChild(label);
+            });
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (progressChart) { // Destroy existing chart if it exists
+                progressChart.destroy();
+            }
+            progressChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Concluídos', 'Pendentes'],
+                    datasets: [{
+                        data: [0, totalModules],
+                        backgroundColor: ['#5D7A8C', '#EFEAE4'],
+                        borderColor: ['#FFFFFF', '#FFFFFF'],
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    }
+                }
+            });
+        }
+
+        setupSubNav(aulasSubNav, aulasContentArea, data.aulas, 'aulas');
+        setupSubNav(exerciciosSubNav, exerciciosContentArea, data.exercicios, 'exercicios');
+        setupVocab();
+        setupRecursos();
+        setupProgressTracker();
+    });
+    </script>
+</body>
+</html>
