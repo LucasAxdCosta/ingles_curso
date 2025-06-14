@@ -8,6 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
     <!-- Chosen Palette: Calm Harmony -->
     <!-- Application Structure Plan: A Single-Page Application (SPA) with a main tabbed navigation for 'Início', 'Aulas', 'Vocabulário', 'Exercícios', and 'Recursos'. This structure organizes the learning material into distinct, manageable sections. The 'Aulas' and 'Exercícios' tabs now feature a secondary sidebar navigation, breaking content into granular lessons and corresponding exercises, creating a clear, step-by-step learning path. This task-oriented design (Learn -> Practice -> Expand) is more intuitive for a self-learner, facilitating a focused and effective study flow. Daily life stories are integrated into grammar lessons for contextual learning. -->
     <!-- Visualization & Content Choices: The report is text-heavy. The application focuses on high-quality typography and structured content presentation using HTML/CSS (Tailwind). Key interactions include: toggleable vocabulary cards with example translations (Goal: Inform/Engage), collapsible exercise answer keys (Goal: Practice/Inform), and copy-to-clipboard buttons (Goal: Utility). Short, simple daily life stories are embedded within grammar lessons to provide context. The only visualization is a simple, dynamic donut chart from Chart.js on the 'Início' page to track module completion, serving as a motivational tool (Goal: Engage/Inform). All content is presented using structured HTML for clarity and accessibility. -->
@@ -239,7 +243,6 @@
             </div>
         </div>
     </main>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
